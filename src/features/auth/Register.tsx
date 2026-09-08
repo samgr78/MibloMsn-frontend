@@ -12,6 +12,7 @@ function Register() {
                 name={"email"}
                 label={"Email"}
             />
+
         </>
     )
 }
