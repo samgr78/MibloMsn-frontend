@@ -1,12 +1,7 @@
-import { Navigate } from 'react-router-dom'
+import type { ReactElement } from 'react'
 
-function Home() {
-  const token = localStorage.getItem('token');
-  const username = localStorage.getItem('username');
-
-  if (!token) {
-    return <Navigate to="/login" replace />
-  }
+function Home(): ReactElement {
+  const username = localStorage.getItem('username') ?? 'utilisateur'
 
   return <h1>Bonjour {username}</h1>
 }

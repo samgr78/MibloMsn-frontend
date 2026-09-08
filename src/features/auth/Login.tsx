@@ -1,40 +1,14 @@
-import { isAxiosError } from 'axios'
-import { useState, type ChangeEvent, type FormEvent } from 'react'
+import { useState, type ChangeEvent, type FormEvent, type ReactElement } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.tsx'
 import Input from '../../shared/components/Input.tsx'
+import { getLoginErrors, parseLoginResponse } from './login.parsers.ts'
+import type {
+  LoginErrors,
+  LoginFormData,
+  PresenceStatus,
+} from './login.types.ts'
 import './auth.css'
-
-type LoginFormData = {
-  email: string
-  password: string
-  status: string
-}
-
-type LoginErrors = {
-  email?: string
-  password?: string
-  general?: string
-}
-
-type LoginResponse = {
-  token?: string
-  name?: string
-  username?: string
-  user?: {
-    name?: string
-    username?: string
-  }
-}
-
-type LoginErrorResponse = {
-  message?: string | string[]
-  field?: 'email' | 'password'
-  errors?: {
-    email?: string
-    password?: string
-  }
-}
 
 const initialFormData: LoginFormData = {
   email: '',
@@ -42,91 +16,74 @@ const initialFormData: LoginFormData = {
   status: 'online',
 }
 
-function getUsername(response: LoginResponse, email: string) {
-  return (
-    response.user?.username ??
-    response.user?.name ??
-    response.username ??
-    response.name ??
-    email.split('@')[0]
-  )
+function isCredentialField(value: string): value is 'email' | 'password' {
+  return value === 'email' || value === 'password'
 }
 
-function getLoginErrors(error: unknown): LoginErrors {
-  if (!isAxiosError<LoginErrorResponse>(error)) {
-    return { general: 'An unexpected error occurred.' }
-  }
-
-  const responseData = error.response?.data
-  const responseMessage = Array.isArray(responseData?.message)
-    ? responseData.message.join(' ')
-    : responseData?.message
-
-  if (responseData?.errors) {
-    return responseData.errors
-  }
-
-  if (responseData?.field) {
-    return { [responseData.field]: responseMessage ?? 'Invalid value.' }
-  }
-
-  if (responseMessage?.toLowerCase().includes('email')) {
-    return { email: responseMessage }
-  }
-
-  if (responseMessage?.toLowerCase().includes('password')) {
-    return { password: responseMessage }
-  }
-
-  if (error.response?.status === 401) {
-    return { general: 'Invalid email or password.' }
-  }
-
-  return { general: responseMessage ?? 'Unable to log in.' }
+function isPresenceStatus(value: string): value is PresenceStatus {
+  return value === 'online' || value === 'offline'
 }
 
-function Login() {
+function Login(): ReactElement {
   const navigate = useNavigate()
   const [formData, setFormData] = useState<LoginFormData>(initialFormData)
   const [errors, setErrors] = useState<LoginErrors>({})
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  function handleChange(event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
-    const { name, value } = event.target
+  function clearCredentialError(field: 'email' | 'password'): void {
+    setErrors((previousErrors) => ({
+      ...previousErrors,
+      [field]: undefined,
+      general: undefined,
+    }))
+  }
+
+  function handleCredentialChange(event: ChangeEvent<HTMLInputElement>): void {
+    const { name, value } = event.currentTarget
+    if (!isCredentialField(name)) {
+      return
+    }
 
     setFormData((previousFormData) => ({
       ...previousFormData,
       [name]: value,
     }))
-
-    if (name === 'email' || name === 'password') {
-      setErrors((previousErrors) => ({
-        ...previousErrors,
-        [name]: undefined,
-        general: undefined,
-      }))
-    }
+    clearCredentialError(name)
   }
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  function handleStatusChange(event: ChangeEvent<HTMLSelectElement>): void {
+    const { value } = event.currentTarget
+    if (!isPresenceStatus(value)) {
+      return
+    }
+
+    setFormData((previousFormData) => ({
+      ...previousFormData,
+      status: value,
+    }))
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault()
     setErrors({})
     setIsLoading(true)
 
     try {
-      const { data } = await api.post<LoginResponse>('/auth/login', formData)
+      const { data }: { data: unknown } = await api.post<unknown>(
+        '/auth/login',
+        formData,
+      )
+      const loginResponse = parseLoginResponse(data, formData.email)
 
-      if (!data.token) {
-        setErrors({ general: 'No authentication token was received.' })
+      if (!loginResponse) {
+        setErrors({ general: 'The server returned an invalid login response.' })
         return
       }
 
-      const username = getUsername(data, formData.email)
-
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('username', username)
+      localStorage.setItem('token', loginResponse.token)
+      localStorage.setItem('username', loginResponse.username)
       navigate('/home')
-    } catch (error) {
+    } catch (error: unknown) {
       setErrors(getLoginErrors(error))
     } finally {
       setIsLoading(false)
@@ -136,21 +93,21 @@ function Login() {
   return (
     <main className="login-page">
       <form className="login-form" onSubmit={handleSubmit}>
-        <div className="header">
-          <div className="cadre">
+        <div className="login-header">
+          <div className="logo-frame">
             <img src="/msn-boneco-vector-logo.png" alt="Logo MSN" />
           </div>
         </div>
 
-        <div className="forminput">
+        <div className="login-fields">
           <Input
             label="E-mail address:"
             type="email"
             name="email"
             id="email"
-            className="input"
+            className="login-input"
             value={formData.email}
-            onChange={handleChange}
+            onChange={handleCredentialChange}
             aria-invalid={Boolean(errors.email)}
             aria-describedby={errors.email ? 'email-error' : undefined}
             autoComplete="email"
@@ -167,9 +124,9 @@ function Login() {
             type="password"
             name="password"
             id="password"
-            className="input"
+            className="login-input"
             value={formData.password}
-            onChange={handleChange}
+            onChange={handleCredentialChange}
             aria-invalid={Boolean(errors.password)}
             aria-describedby={errors.password ? 'password-error' : undefined}
             autoComplete="current-password"
@@ -186,23 +143,23 @@ function Login() {
             <select
               name="status"
               value={formData.status}
-              onChange={handleChange}
+              onChange={handleStatusChange}
             >
               <option value="online">Online</option>
               <option value="offline">Offline</option>
             </select>
           </div>
 
-          <div className="checkdiv">
-            <div className="check">
+          <div className="login-options">
+            <div className="login-option">
               <input type="checkbox" name="rememberMe" />
               <span>Remember me</span>
             </div>
-            <div className="check">
+            <div className="login-option">
               <input type="checkbox" name="rememberPassword" />
               <span>Remember my password</span>
             </div>
-            <div className="check">
+            <div className="login-option">
               <input type="checkbox" name="autoLogin" />
               <span>Sign me in automatically</span>
             </div>
@@ -219,13 +176,13 @@ function Login() {
           </button>
         </div>
 
-        <div className="footer">
-          <div className="left">
+        <div className="login-footer">
+          <div className="login-footer-links">
             <Link to="/forgot-passord">Forgot a password?</Link>
             <Link to="/status">Services status</Link>
           </div>
 
-          <div className="right">
+          <div className="login-footer-account">
             <Link to="/register">Get a new account</Link>
           </div>
         </div>

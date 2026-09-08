@@ -1,0 +1,41 @@
+.app-layout {
+    display: grid;
+    grid-template-columns: minmax(180px, 20%) 1fr;
+    gap: 10px;
+    min-height: 100vh;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: var(--msn-bg-gray);
+}
+
+.app-navigation {
+    padding: 16px;
+    border: 5px solid var(--msn-border);
+    background: linear-gradient(
+        0deg,
+        var(--msn-bg) 0%,
+        var(--msn-border) 50%,
+        var(--msn-bg) 100%
+    );
+}
+
+.app-navigation a {
+    display: block;
+    padding: 8px;
+}
+
+.app-navigation a.active {
+    font-weight: var(--msn-font-bold);
+}
+
+.app-content {
+    padding: 20px;
+    border: 1px solid var(--msn-border);
+    background-color: var(--msn-bg-light);
+}
+
+@media (max-width: 600px) {
+    .app-layout {
+        grid-template-columns: 1fr;
+    }
+}

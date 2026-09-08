@@ -34,6 +34,11 @@
   --msn-font-normal: 400;
   --msn-font-bold: 700;
 }
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 body {
   margin: 0;
