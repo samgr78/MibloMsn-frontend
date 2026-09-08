@@ -1,111 +1,49 @@
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  /* === MSN / Windows XP — Backgrounds === */
+  --msn-bg: #E7EEFA;
+  --msn-bg-secondary: #D5E2F5;
+  --msn-bg-light: #F7F9FD;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  /* === Borders === */
+  --msn-border: #91A9D0;
+  --msn-border-active: #4D72B8;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* === Text === */
+  --msn-text: #102A72;
+  --msn-link: #0000EE;
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
-}
+  /* === Windows / Header === */
+  --msn-header: #24518A;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
+  /* === MSN Accents === */
+  --msn-orange: #FF7A32;
+  --msn-green: #55B86A;
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
+  --msn-font: Tahoma, Verdana, Arial, sans-serif;
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  --msn-font-size-xs: 10px;
+  --msn-font-size-sm: 11px;
+  --msn-font-size-md: 12px;
+  --msn-font-size-lg: 14px;
+  --msn-font-size-title: 16px;
+
+  --msn-font-normal: 400;
+  --msn-font-bold: 700;
 }
 
 body {
-  margin: 0;
+  font-family: var(--msn-font);
+  font-size: var(--msn-font-size-sm);
+  color: var(--msn-text);
+  background: var(--msn-bg);
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+a {
+  color: var(--msn-link);
+  font-size: var(--msn-font-size-sm);
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+  font-size: var(--msn-font-size-title);
+  font-weight: var(--msn-font-bold);
 }
