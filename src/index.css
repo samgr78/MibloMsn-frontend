@@ -3,7 +3,10 @@
   --msn-bg: #E7EEFA;
   --msn-bg-secondary: #D5E2F5;
   --msn-bg-light: #F7F9FD;
+  --msn-bg-gray: #cecece;
 
+
+  --msn-box-shadow: #e6e6e6;
   /* === Borders === */
   --msn-border: #91A9D0;
   --msn-border-active: #4D72B8;
@@ -18,6 +21,7 @@
   /* === MSN Accents === */
   --msn-orange: #FF7A32;
   --msn-green: #55B86A;
+  --msn-green2: #429a55;
 
   --msn-font: Tahoma, Verdana, Arial, sans-serif;
 
@@ -32,6 +36,8 @@
 }
 
 body {
+  margin: 0;
+  min-width: 320px;
   font-family: var(--msn-font);
   font-size: var(--msn-font-size-sm);
   color: var(--msn-text);
@@ -47,4 +53,3 @@ h1 {
   font-size: var(--msn-font-size-title);
   font-weight: var(--msn-font-bold);
 }
-
