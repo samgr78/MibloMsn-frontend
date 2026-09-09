@@ -1,0 +1,13 @@
+.dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid rgba(16, 42, 114, 0.3);
+  flex: none;
+}
+
+.online { background: var(--msn-green); }
+.away { background: var(--msn-yellow); }
+.busy { background: var(--msn-red); }
+.offline { background: #B7C4D8; }

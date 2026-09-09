@@ -1,0 +1,15 @@
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gapNone { gap: 0; }
+.gapSm { gap: var(--msn-space-2); }
+.gapMd { gap: var(--msn-space-3); }
+
+.divided > li + li {
+  border-top: 1px solid var(--msn-border-soft);
+}

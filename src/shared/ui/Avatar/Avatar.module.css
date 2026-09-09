@@ -1,0 +1,30 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+
+.tile {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--msn-border);
+  border-radius: var(--msn-radius);
+  background: var(--msn-bg-secondary);
+  color: var(--msn-text-inverse);
+  font-weight: var(--msn-font-bold);
+  text-transform: uppercase;
+  overflow: hidden;
+  user-select: none;
+}
+
+.sm { width: 24px; height: 24px; font-size: var(--msn-font-size-xs); }
+.md { width: 36px; height: 36px; font-size: var(--msn-font-size-md); }
+.lg { width: 64px; height: 64px; font-size: var(--msn-font-size-title); }
+
+.status {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+}

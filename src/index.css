@@ -1,49 +1,54 @@
-:root {
-  /* === MSN / Windows XP — Backgrounds === */
-  --msn-bg: #E7EEFA;
-  --msn-bg-secondary: #D5E2F5;
-  --msn-bg-light: #F7F9FD;
+@import "./shared/ui/tokens.css";
 
-  /* === Borders === */
-  --msn-border: #91A9D0;
-  --msn-border-active: #4D72B8;
-
-  /* === Text === */
-  --msn-text: #102A72;
-  --msn-link: #0000EE;
-
-  /* === Windows / Header === */
-  --msn-header: #24518A;
-
-  /* === MSN Accents === */
-  --msn-orange: #FF7A32;
-  --msn-green: #55B86A;
-
-  --msn-font: Tahoma, Verdana, Arial, sans-serif;
-
-  --msn-font-size-xs: 10px;
-  --msn-font-size-sm: 11px;
-  --msn-font-size-md: 12px;
-  --msn-font-size-lg: 14px;
-  --msn-font-size-title: 16px;
-
-  --msn-font-normal: 400;
-  --msn-font-bold: 700;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 body {
+  margin: 0;
+  min-height: 100vh;
   font-family: var(--msn-font);
   font-size: var(--msn-font-size-sm);
   color: var(--msn-text);
-  background: var(--msn-bg);
+  background:
+    radial-gradient(ellipse at 50% -20%, #F4F8FE 0%, var(--msn-bg) 55%, var(--msn-bg-secondary) 100%)
+    fixed;
 }
 
 a {
   color: var(--msn-link);
-  font-size: var(--msn-font-size-sm);
+  font-size: inherit;
 }
 
 h1 {
   font-size: var(--msn-font-size-title);
   font-weight: var(--msn-font-bold);
+  margin: 0;
+}
+
+h2 {
+  font-size: var(--msn-font-size-lg);
+  font-weight: var(--msn-font-bold);
+  margin: 0;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* Le focus reste visible partout : les tests Testing Library naviguent au clavier. */
+:focus-visible {
+  outline: none;
+  box-shadow: var(--msn-focus-ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

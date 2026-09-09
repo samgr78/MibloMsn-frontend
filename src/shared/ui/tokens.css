@@ -1,0 +1,57 @@
+:root {
+  /* === MSN / Windows XP — Backgrounds === */
+  --msn-bg: #E7EEFA;
+  --msn-bg-secondary: #D5E2F5;
+  --msn-bg-light: #F7F9FD;
+  --msn-bg-surface: #FFFFFF;
+  --msn-bg-hover: #EDF3FD;
+  --msn-bg-selected: #C9DBF5;
+
+  /* === Borders === */
+  --msn-border: #91A9D0;
+  --msn-border-active: #4D72B8;
+  --msn-border-soft: #C3D4EC;
+
+  /* === Text === */
+  --msn-text: #102A72;
+  --msn-text-muted: #5C7099;
+  --msn-text-inverse: #FFFFFF;
+  --msn-link: #0000EE;
+
+  /* === Windows / Header === */
+  --msn-header: #24518A;
+  --msn-header-gradient: linear-gradient(180deg, #5A9BE8 0%, #2F6FC4 48%, #24518A 100%);
+  --msn-header-inactive: linear-gradient(180deg, #A8C0DE 0%, #8AA5CA 100%);
+
+  /* === MSN Accents === */
+  --msn-orange: #FF7A32;
+  --msn-green: #55B86A;
+  --msn-red: #C4321E;
+  --msn-yellow: #F2C230;
+
+  /* === Typographie === */
+  --msn-font: Tahoma, Verdana, Arial, sans-serif;
+
+  --msn-font-size-xs: 10px;
+  --msn-font-size-sm: 11px;
+  --msn-font-size-md: 12px;
+  --msn-font-size-lg: 14px;
+  --msn-font-size-title: 16px;
+
+  --msn-font-normal: 400;
+  --msn-font-bold: 700;
+
+  /* === Espacements === */
+  --msn-space-1: 4px;
+  --msn-space-2: 8px;
+  --msn-space-3: 12px;
+  --msn-space-4: 16px;
+  --msn-space-5: 24px;
+
+  /* === Relief === */
+  --msn-radius: 3px;
+  --msn-radius-window: 8px;
+  --msn-shadow: 0 2px 6px rgba(16, 42, 114, 0.22);
+  --msn-shadow-window: 0 6px 20px rgba(16, 42, 114, 0.28);
+  --msn-focus-ring: 0 0 0 2px #FFFFFF, 0 0 0 4px var(--msn-border-active);
+}

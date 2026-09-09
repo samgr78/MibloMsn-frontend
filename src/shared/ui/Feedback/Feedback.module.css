@@ -1,0 +1,68 @@
+.block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--msn-space-2);
+  padding: var(--msn-space-5) var(--msn-space-4);
+  text-align: center;
+  color: var(--msn-text-muted);
+}
+
+/* === Spinner === */
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid var(--msn-bg-secondary);
+  border-top-color: var(--msn-border-active);
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+}
+
+.spinnerInline {
+  width: 14px;
+  height: 14px;
+  border-width: 2px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* === Icône ronde partagée par error / empty === */
+.icon {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: var(--msn-font-size-lg);
+  font-weight: var(--msn-font-bold);
+  color: var(--msn-text-inverse);
+}
+
+.iconError {
+  background: var(--msn-red);
+}
+
+.iconNotFound {
+  background: var(--msn-orange);
+}
+
+.iconEmpty {
+  background: var(--msn-border);
+}
+
+.title {
+  font-size: var(--msn-font-size-md);
+  font-weight: var(--msn-font-bold);
+  color: var(--msn-text);
+}
+
+.message {
+  max-width: 42ch;
+  margin: 0;
+  line-height: 1.5;
+}
