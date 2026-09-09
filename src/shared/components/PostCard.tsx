@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react'
 import { resolveApiUrl } from '../../api/axios.tsx'
 import type { Post } from '../../features/feed/post.schema.ts'
+import { LikeButton } from '../../features/likes/LikeButton.tsx'
 
 type PostCardProps = {
   post: Post
@@ -50,9 +51,7 @@ export function PostCard({ post }: PostCardProps): ReactElement {
       </div>
 
       <footer className="post-card-stats">
-        <span>
-          <strong>Likes:</strong> {post.likeCount}
-        </span>
+        <LikeButton post={post} />
         <span>
           <strong>Comments:</strong> {post.commentCount}
         </span>
