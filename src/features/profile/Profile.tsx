@@ -30,10 +30,49 @@ type PasswordFormData = {
   newPassword: string
 }
 
+type PostSection = 'own' | 'liked'
+
+type ProfilePostListProps = {
+  posts: Post[]
+  emptyMessage: string
+  onUnlike?: (postId: string) => void
+}
+
 const emptyIdentityForm: IdentityFormData = { username: '', email: '' }
 const emptyPasswordForm: PasswordFormData = {
   currentPassword: '',
   newPassword: '',
+}
+
+function ProfilePostList({
+  posts,
+  emptyMessage,
+  onUnlike,
+}: ProfilePostListProps): ReactElement {
+  if (posts.length === 0) {
+    return <p className="profile-empty-posts">{emptyMessage}</p>
+  }
+
+  return (
+    <ul className="profile-post-list">
+      {posts.map((post) => (
+        <li key={post.id}>
+          <PostCard
+            post={post}
+            onLikeChange={
+              onUnlike
+                ? (isLiked) => {
+                    if (!isLiked) {
+                      onUnlike(post.id)
+                    }
+                  }
+                : undefined
+            }
+          />
+        </li>
+      ))}
+    </ul>
+  )
 }
 
 function Profile(): ReactElement {
@@ -51,6 +90,8 @@ function Profile(): ReactElement {
   const [passwordError, setPasswordError] = useState<string>('')
   const [isSavingIdentity, setIsSavingIdentity] = useState<boolean>(false)
   const [isSavingPassword, setIsSavingPassword] = useState<boolean>(false)
+  const [activePostSection, setActivePostSection] =
+    useState<PostSection>('own')
 
   useEffect(() => {
     const controller = new AbortController()
@@ -234,47 +275,62 @@ function Profile(): ReactElement {
         </Form>
       </div>
 
-      <section className="profile-posts-panel">
-        <header>
-          <h2>My posts</h2>
-          <span>{ownPosts.length}</span>
-        </header>
-        {ownPosts.length === 0 ? (
-          <p className="profile-empty-posts">You have not created a post yet.</p>
-        ) : (
-          <ul className="profile-post-list">
-            {ownPosts.map((post) => (
-              <li key={post.id}><PostCard post={post} /></li>
-            ))}
-          </ul>
-        )}
-      </section>
+      <section className="profile-posts-area">
+        <div className="profile-post-tabs" role="tablist" aria-label="Profile posts">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activePostSection === 'own'}
+            onClick={() => setActivePostSection('own')}
+          >
+            <span aria-hidden="true">▤</span>
+            My posts
+            <strong>{ownPosts.length}</strong>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={activePostSection === 'liked'}
+            onClick={() => setActivePostSection('liked')}
+          >
+            <span aria-hidden="true">♥</span>
+            Liked posts
+            <strong>{likedPosts.length}</strong>
+          </button>
+        </div>
 
-      <section className="profile-posts-panel">
-        <header>
-          <h2>Liked posts</h2>
-          <span>{likedPosts.length}</span>
-        </header>
-        {likedPosts.length === 0 ? (
-          <p className="profile-empty-posts">You have not liked a post yet.</p>
-        ) : (
-          <ul className="profile-post-list">
-            {likedPosts.map((post) => (
-              <li key={post.id}>
-                <PostCard
-                  post={post}
-                  onLikeChange={(isLiked) => {
-                    if (!isLiked) {
-                      setLikedPosts((posts) =>
-                        posts.filter((likedPost) => likedPost.id !== post.id),
-                      )
-                    }
-                  }}
-                />
-              </li>
-            ))}
-          </ul>
-        )}
+        <div className="profile-posts-panel" role="tabpanel">
+          <header>
+            <div>
+              <h2>{activePostSection === 'own' ? 'My posts' : 'Liked posts'}</h2>
+              <p>
+                {activePostSection === 'own'
+                  ? 'Posts you have shared on MiBLo.'
+                  : 'Posts you saved with a like.'}
+              </p>
+            </div>
+            <span>
+              {activePostSection === 'own' ? ownPosts.length : likedPosts.length}
+            </span>
+          </header>
+
+          {activePostSection === 'own' ? (
+            <ProfilePostList
+              posts={ownPosts}
+              emptyMessage="You have not created a post yet."
+            />
+          ) : (
+            <ProfilePostList
+              posts={likedPosts}
+              emptyMessage="You have not liked a post yet."
+              onUnlike={(postId) =>
+                setLikedPosts((posts) =>
+                  posts.filter((post) => post.id !== postId),
+                )
+              }
+            />
+          )}
+        </div>
       </section>
     </div>
   )

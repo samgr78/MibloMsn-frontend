@@ -105,8 +105,70 @@
     padding: 20px;
 }
 
-.profile-posts-panel {
+.profile-posts-area {
     margin: 0 20px 20px;
+}
+
+.profile-post-tabs {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    padding-left: 8px;
+}
+
+.profile-post-tabs button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-height: 35px;
+    padding: 7px 13px;
+    color: #3d587a;
+    font: inherit;
+    cursor: pointer;
+    border: 1px solid #91a9d0;
+    border-bottom: 0;
+    border-radius: 5px 5px 0 0;
+    background: linear-gradient(180deg, #f4f7fb 0%, #c9d8e9 100%);
+    box-shadow: inset 1px 1px 0 #ffffff;
+}
+
+.profile-post-tabs button[aria-selected="true"] {
+    position: relative;
+    z-index: 1;
+    min-height: 39px;
+    color: #153b73;
+    font-weight: var(--msn-font-bold);
+    background: linear-gradient(180deg, #ffffff 0%, #e5f2fc 100%);
+}
+
+.profile-post-tabs button:focus-visible {
+    outline: 2px solid var(--msn-border-active);
+    outline-offset: 2px;
+}
+
+.profile-post-tabs button > span {
+    color: #2d9361;
+    font-size: var(--msn-font-size-title);
+}
+
+.profile-post-tabs button:nth-child(2) > span {
+    color: #ae2635;
+}
+
+.profile-post-tabs button strong {
+    display: grid;
+    min-width: 20px;
+    height: 18px;
+    padding-inline: 5px;
+    color: #ffffff;
+    font-size: var(--msn-font-size-xs);
+    place-items: center;
+    border: 1px solid #286b9f;
+    border-radius: 9px;
+    background: linear-gradient(180deg, #68b9d7 0%, #287fae 100%);
+}
+
+.profile-posts-panel {
     overflow: hidden;
     border: 1px solid #91a9d0;
     border-radius: 4px;
@@ -122,6 +184,18 @@
     color: #153b73;
     border-bottom: 1px solid #9db5d8;
     background: linear-gradient(180deg, #ffffff 0%, #d7e8f7 58%, #c2daec 100%);
+}
+
+.profile-posts-panel > header div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.profile-posts-panel > header p {
+    color: #526b8b;
+    font-size: var(--msn-font-size-xs);
+    font-weight: var(--msn-font-normal);
 }
 
 .profile-posts-panel > header h2 {
@@ -264,7 +338,21 @@
     }
 
     .profile-posts-panel {
+        border-radius: 0 0 4px 4px;
+    }
+
+    .profile-posts-area {
         margin: 0 12px 12px;
+    }
+
+    .profile-post-tabs {
+        padding-left: 3px;
+    }
+
+    .profile-post-tabs button {
+        flex: 1;
+        justify-content: center;
+        padding-inline: 6px;
     }
 
     .profile-post-list {
