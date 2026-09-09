@@ -1,17 +1,22 @@
-.post-success-message {
+.create-post {
+    margin-bottom: 16px;
+}
+
+.create-post-success {
     padding: 10px 12px;
     color: #176b2c;
     border: 1px solid var(--msn-green);
     background-color: #e8f7eb;
 }
 
-.btn-modal{
+.create-post-button {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 5px 30px;
-    background-color: var(--msn-green);
     color: var(--msn-link);
+    cursor: pointer;
+    border: 1px solid var(--msn-border-active);
     border-bottom: 2px solid var(--msn-orange);
-
+    background-color: var(--msn-green);
 }

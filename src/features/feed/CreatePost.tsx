@@ -11,10 +11,14 @@ import Modal from '../../shared/components/Modal.tsx'
 import {
   getCreatePostErrorMessage,
   parseImageUrl,
-} from './post.parsers.ts'
-import './Home.css'
+} from './createPost.parsers.ts'
+import './CreatePost.css'
 
-function Home(): ReactElement {
+type CreatePostProps = {
+  onPostCreated: () => void
+}
+
+function CreatePost({ onPostCreated }: CreatePostProps): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [content, setContent] = useState<string>('')
   const [image, setImage] = useState<File | null>(null)
@@ -50,7 +54,7 @@ function Home(): ReactElement {
     setFormError(null)
   }
 
-  async function handleModalSubmit(
+  async function handleSubmit(
     event: FormEvent<HTMLFormElement>,
   ): Promise<void> {
     event.preventDefault()
@@ -84,9 +88,8 @@ function Home(): ReactElement {
           },
         },
       )
-      const imageUrl = parseImageUrl(data)
 
-      if (!imageUrl) {
+      if (!parseImageUrl(data)) {
         setFormError('The server did not return a valid image URL.')
         return
       }
@@ -95,6 +98,7 @@ function Home(): ReactElement {
       setImage(null)
       setSuccessMessage('Post created successfully.')
       closeModal()
+      onPostCreated()
     } catch (error: unknown) {
       setFormError(getCreatePostErrorMessage(error))
     } finally {
@@ -103,13 +107,17 @@ function Home(): ReactElement {
   }
 
   return (
-    <div>
-      <button type="button" className="btn-modal" onClick={openModal}>
+    <div className="create-post">
+      <button
+        type="button"
+        className="create-post-button"
+        onClick={openModal}
+      >
         Create a post
       </button>
 
       {successMessage && (
-        <p className="post-success-message" role="status">
+        <p className="create-post-success" role="status">
           {successMessage}
         </p>
       )}
@@ -119,8 +127,7 @@ function Home(): ReactElement {
         onClose={closeModal}
         title="Create a post"
       >
-        <Form className="modal-form" onSubmit={handleModalSubmit}>
-
+        <Form className="modal-form" onSubmit={handleSubmit}>
           <Input
             label="Image"
             type="file"
@@ -134,13 +141,13 @@ function Home(): ReactElement {
           <label className="modal-content-field" htmlFor="post-content">
             Content
             <textarea
-                id="post-content"
-                name="content"
-                className="modal-textarea"
-                placeholder="Your text..."
-                value={content}
-                onChange={handleContentChange}
-                required
+              id="post-content"
+              name="content"
+              className="modal-textarea"
+              placeholder="Your text..."
+              value={content}
+              onChange={handleContentChange}
+              required
             />
           </label>
 
@@ -163,4 +170,4 @@ function Home(): ReactElement {
   )
 }
 
-export default Home
+export default CreatePost
