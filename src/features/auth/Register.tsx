@@ -2,9 +2,10 @@ import { useState, type ChangeEvent, type FormEvent, type ReactElement } from 'r
 import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.tsx'
 import Input from '../../shared/components/Input.tsx'
-import { getRegisterErrors, parseRegisterResponse } from './register.parsers.ts'
+import {getRegisterErrors, getRegisterErrorsFromData, parseRegisterResponse} from './register.parsers.ts'
 import type { RegisterErrors, RegisterFormData } from './register.types.ts'
 import './auth.css'
+import { validateRegisterForm, hasRegisterErrors } from './register.validator.ts'
 
 const initialFormData: RegisterFormData = {
     email: '',
@@ -45,6 +46,13 @@ function Register(): ReactElement {
 
     async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
         event.preventDefault()
+
+        const validationErrors = validateRegisterForm(formData)
+        if (hasRegisterErrors(validationErrors)) {
+            setErrors(validationErrors)
+            return
+        }
+
         setErrors({})
         setIsLoading(true)
 
@@ -53,16 +61,20 @@ function Register(): ReactElement {
                 '/auth/register',
                 formData,
             )
-            const registerResponse = parseRegisterResponse(data, formData.username)
 
-            if (!registerResponse) {
-                setErrors({ general: 'The server returned an invalid response.' })
+            const registerResponse = parseRegisterResponse(data, formData.username)
+            if (registerResponse) {
+                localStorage.setItem('token', registerResponse.token)
+                localStorage.setItem('username', registerResponse.username)
+                navigate('/home')
                 return
             }
 
-            localStorage.setItem('token', registerResponse.token)
-            localStorage.setItem('username', registerResponse.username)
-            navigate('/home')
+            setErrors(
+                getRegisterErrorsFromData(data) ?? {
+                    general: 'The server returned an invalid response.',
+                },
+            )
         } catch (error: unknown) {
             setErrors(getRegisterErrors(error))
         } finally {
