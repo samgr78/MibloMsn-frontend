@@ -92,21 +92,31 @@ function Login(): ReactElement {
   }
 
   return (
-    <main className="login-page">
-      <Form className="login-form" onSubmit={handleSubmit}>
-        <div className="login-header">
+    <main className="auth-page">
+      <Form className="auth-form" onSubmit={handleSubmit}>
+        <div className="auth-titlebar">
+          <img src="/msn-boneco-vector-logo.png" alt="" />
+          <span>MiBLo Messenger</span>
+          <span className="auth-titlebar-controls" aria-hidden="true">
+            _ □ ×
+          </span>
+        </div>
+
+        <div className="auth-header">
           <div className="logo-frame">
             <img src="/msn-boneco-vector-logo.png" alt="Logo MSN" />
           </div>
+          <h1>Sign in</h1>
+          <p>Enter your account details to connect.</p>
         </div>
 
-        <div className="login-fields">
+        <div className="auth-fields">
           <Input
             label="E-mail address:"
             type="email"
             name="email"
             id="email"
-            className="login-input"
+            className="auth-input"
             value={formData.email}
             onChange={handleCredentialChange}
             aria-invalid={Boolean(errors.email)}
@@ -125,7 +135,7 @@ function Login(): ReactElement {
             type="password"
             name="password"
             id="password"
-            className="login-input"
+            className="auth-input"
             value={formData.password}
             onChange={handleCredentialChange}
             aria-invalid={Boolean(errors.password)}
@@ -151,16 +161,16 @@ function Login(): ReactElement {
             </select>
           </div>
 
-          <div className="login-options">
-            <div className="login-option">
+          <div className="auth-options">
+            <div className="auth-option">
               <input type="checkbox" name="rememberMe" />
               <span>Remember me</span>
             </div>
-            <div className="login-option">
+            <div className="auth-option">
               <input type="checkbox" name="rememberPassword" />
               <span>Remember my password</span>
             </div>
-            <div className="login-option">
+            <div className="auth-option">
               <input type="checkbox" name="autoLogin" />
               <span>Sign me in automatically</span>
             </div>
@@ -177,13 +187,13 @@ function Login(): ReactElement {
           </button>
         </div>
 
-        <div className="login-footer">
-          <div className="login-footer-links">
+        <div className="auth-footer">
+          <div className="auth-footer-links">
             <Link to="/forgot-passord">Forgot a password?</Link>
             <Link to="/status">Services status</Link>
           </div>
 
-          <div className="login-footer-account">
+          <div className="auth-footer-account">
             <Link to="/register">Get a new account</Link>
           </div>
         </div>

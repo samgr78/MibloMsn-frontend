@@ -1,8 +1,13 @@
 import { useState, type ChangeEvent, type FormEvent, type ReactElement } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.tsx'
+import Form from '../../shared/components/Form.tsx'
 import Input from '../../shared/components/Input.tsx'
-import {getRegisterErrors, getRegisterErrorsFromData, parseRegisterResponse} from './register.parsers.ts'
+import {
+    getRegisterErrors,
+    getRegisterErrorsFromData,
+    parseRegisterResponse,
+} from './register.parsers.ts'
 import type { RegisterErrors, RegisterFormData } from './register.types.ts'
 import './auth.css'
 import { validateRegisterForm, hasRegisterErrors } from './register.validator.ts'
@@ -83,17 +88,31 @@ function Register(): ReactElement {
     }
 
     return (
-        <main className="register-page">
-            <form className="register-form" onSubmit={handleSubmit} noValidate>
-                <h1>Register</h1>
+        <main className="auth-page">
+            <Form className="auth-form" onSubmit={handleSubmit} noValidate>
+                <div className="auth-titlebar">
+                    <img src="/msn-boneco-vector-logo.png" alt="" />
+                    <span>MiBLo Messenger</span>
+                    <span className="auth-titlebar-controls" aria-hidden="true">
+                        _ □ ×
+                    </span>
+                </div>
 
-                <div className="register-fields">
+                <div className="auth-header">
+                    <div className="logo-frame">
+                        <img src="/msn-boneco-vector-logo.png" alt="Logo MSN" />
+                    </div>
+                    <h1>Create an account</h1>
+                    <p>Join MiBLo Messenger and start sharing.</p>
+                </div>
+
+                <div className="auth-fields">
                     <Input
-                        label="Email"
+                        label="E-mail address:"
                         type="email"
                         name="email"
                         id="email"
-                        className="input"
+                        className="auth-input"
                         value={formData.email}
                         onChange={handleChange}
                         aria-invalid={Boolean(errors.email)}
@@ -108,11 +127,11 @@ function Register(): ReactElement {
                     )}
 
                     <Input
-                        label="Nom d'utilisateur"
+                        label="Username:"
                         type="text"
                         name="username"
                         id="username"
-                        className="input"
+                        className="auth-input"
                         value={formData.username}
                         onChange={handleChange}
                         aria-invalid={Boolean(errors.username)}
@@ -127,11 +146,11 @@ function Register(): ReactElement {
                     )}
 
                     <Input
-                        label="Password"
+                        label="Password:"
                         type="password"
                         name="password"
                         id="password"
-                        className="input"
+                        className="auth-input"
                         value={formData.password}
                         onChange={handleChange}
                         aria-invalid={Boolean(errors.password)}
@@ -152,14 +171,16 @@ function Register(): ReactElement {
                     )}
 
                     <button type="submit" disabled={isLoading}>
-                        {isLoading ? 'Création en cours…' : 'Créer mon compte'}
+                        {isLoading ? 'Creating account...' : 'Create my account'}
                     </button>
                 </div>
 
-                <p>
-                    Déjà un compte ? <Link to="/login">Se connecter</Link>
-                </p>
-            </form>
+                <div className="auth-footer auth-footer--centered">
+                    <p>
+                        Already have an account? <Link to="/login">Sign in</Link>
+                    </p>
+                </div>
+            </Form>
         </main>
     )
 }
