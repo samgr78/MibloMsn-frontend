@@ -36,6 +36,7 @@ type ProfilePostListProps = {
   posts: Post[]
   emptyMessage: string
   onUnlike?: (postId: string) => void
+  onDelete?: (postId: string) => void
 }
 
 const emptyIdentityForm: IdentityFormData = { username: '', email: '' }
@@ -48,6 +49,7 @@ function ProfilePostList({
   posts,
   emptyMessage,
   onUnlike,
+  onDelete,
 }: ProfilePostListProps): ReactElement {
   if (posts.length === 0) {
     return <p className="profile-empty-posts">{emptyMessage}</p>
@@ -68,6 +70,7 @@ function ProfilePostList({
                   }
                 : undefined
             }
+            onDelete={onDelete ? () => onDelete(post.id) : undefined}
           />
         </li>
       ))}
@@ -318,6 +321,14 @@ function Profile(): ReactElement {
             <ProfilePostList
               posts={ownPosts}
               emptyMessage="You have not created a post yet."
+              onDelete={(postId) => {
+                setOwnPosts((posts) =>
+                  posts.filter((post) => post.id !== postId),
+                )
+                setLikedPosts((posts) =>
+                  posts.filter((post) => post.id !== postId),
+                )
+              }}
             />
           ) : (
             <ProfilePostList

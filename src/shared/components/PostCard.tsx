@@ -2,10 +2,12 @@ import type { ReactElement } from 'react'
 import { resolveApiUrl } from '../../api/axios.tsx'
 import type { Post } from '../../features/feed/post.schema.ts'
 import { LikeButton } from '../../features/likes/LikeButton.tsx'
+import { DeletePostButton } from '../../features/feed/DeletePostButton.tsx'
 
 type PostCardProps = {
   post: Post
   onLikeChange?: (isLiked: boolean) => void
+  onDelete?: () => void
 }
 
 function formatPostDate(createdAt: string): string {
@@ -15,7 +17,11 @@ function formatPostDate(createdAt: string): string {
   }).format(new Date(createdAt))
 }
 
-export function PostCard({ post, onLikeChange }: PostCardProps): ReactElement {
+export function PostCard({
+  post,
+  onLikeChange,
+  onDelete,
+}: PostCardProps): ReactElement {
   const authorInitial = post.author.username.charAt(0).toUpperCase()
 
   return (
@@ -56,6 +62,7 @@ export function PostCard({ post, onLikeChange }: PostCardProps): ReactElement {
         <span>
           <strong>Comments:</strong> {post.commentCount}
         </span>
+        {onDelete && <DeletePostButton postId={post.id} onDeleted={onDelete} />}
       </footer>
     </article>
   )
