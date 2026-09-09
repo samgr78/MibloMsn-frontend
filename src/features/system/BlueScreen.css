@@ -1,0 +1,54 @@
+.blue-screen {
+    display: grid;
+    width: 100vw;
+    min-width: 320px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: clamp(24px, 8vw, 110px);
+    color: #ffffff;
+    font-family: "Courier New", Courier, monospace;
+    font-size: clamp(15px, 2vw, 23px);
+    line-height: 1.45;
+    place-items: center;
+    background-color: #0000aa;
+}
+
+.blue-screen-content {
+    width: min(900px, 100%);
+}
+
+.blue-screen-title {
+    width: fit-content;
+    padding: 0 10px;
+    margin: 0 auto 32px;
+    color: #0000aa;
+    background-color: #c0c0c0;
+}
+
+.blue-screen p,
+.blue-screen ul {
+    margin-bottom: 28px;
+}
+
+.blue-screen ul {
+    padding-left: 38px;
+}
+
+.blue-screen button {
+    display: block;
+    padding: 4px 8px;
+    margin: 42px auto 0;
+    color: #ffffff;
+    font: inherit;
+    cursor: pointer;
+    border: 0;
+    background: transparent;
+}
+
+.blue-screen button:hover,
+.blue-screen button:focus-visible {
+    color: #0000aa;
+    outline: 0;
+    background-color: #c0c0c0;
+}
+

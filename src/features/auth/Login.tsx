@@ -17,6 +17,12 @@ const initialFormData: LoginFormData = {
   status: 'online',
 }
 
+const BLUE_SCREEN_PROBABILITY = 0.1
+
+function shouldTriggerBlueScreen(): boolean {
+  return Math.random() < BLUE_SCREEN_PROBABILITY
+}
+
 function isCredentialField(value: string): value is 'email' | 'password' {
   return value === 'email' || value === 'password'
 }
@@ -83,6 +89,14 @@ function Login(): ReactElement {
 
       localStorage.setItem('token', loginResponse.token)
       localStorage.setItem('username', loginResponse.username)
+
+      if (shouldTriggerBlueScreen()) {
+        localStorage.removeItem('token')
+        localStorage.removeItem('username')
+        navigate('/blue-screen', { replace: true })
+        return
+      }
+
       navigate('/feed')
     } catch (error: unknown) {
       setErrors(getLoginErrors(error))
