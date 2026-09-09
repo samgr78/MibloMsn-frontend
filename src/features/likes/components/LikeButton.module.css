@@ -1,0 +1,37 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--msn-space-1);
+  padding: 2px var(--msn-space-2);
+  font-family: var(--msn-font);
+  font-size: var(--msn-font-size-sm);
+  color: var(--msn-text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--msn-radius);
+  cursor: pointer;
+}
+
+.button:hover:not(:disabled) {
+  background: var(--msn-bg-hover);
+  border-color: var(--msn-border-soft);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.liked {
+  color: var(--msn-red);
+  font-weight: var(--msn-font-bold);
+}
+
+.icon {
+  font-size: var(--msn-font-size-md);
+  line-height: 1;
+}
+
+.count {
+  font-variant-numeric: tabular-nums;
+}

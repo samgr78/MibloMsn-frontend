@@ -6,6 +6,7 @@ import { EmptyState } from "../../../shared/ui/Feedback/EmptyState";
 import { Window } from "../../../shared/ui/Window/Window";
 import { CommentForm } from "../../comments/components/CommentForm";
 import { CommentList } from "../../comments/components/CommentList";
+import { LikeButton } from "../../likes/components/LikeButton";
 import { PostCard } from "../components/PostCard";
 import { usePost } from "../hooks/usePost";
 import styles from "./PostDetailPage.module.css";
@@ -44,7 +45,11 @@ export function PostDetailPage() {
       <ScreenStateView state={state}>
         {(detail) => (
           <>
-            <PostCard post={detail} variant="detail" />
+            <PostCard
+              post={detail}
+              variant="detail"
+              actions={<LikeButton post={detail} />}
+            />
 
             <Window
               variant="panel"

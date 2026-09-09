@@ -45,6 +45,15 @@ export const PostDetailSchema = PostSchema.extend({
 
 export type PostDetail = z.infer<typeof PostDetailSchema>;
 
+/** Like route response: enough to reconcile what is displayed. */
+export const LikeStateSchema = z.object({
+  postId: z.string().min(1),
+  likeCount: z.number().int().nonnegative(),
+  likedByMe: z.boolean(),
+});
+
+export type LikeState = z.infer<typeof LikeStateSchema>;
+
 export const POST_CONTENT_MAX = 500;
 
 export const CreatePostSchema = z.object({

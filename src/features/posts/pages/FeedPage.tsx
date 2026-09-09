@@ -5,6 +5,7 @@ import { useIntersection } from "../../../shared/hooks/useIntersection";
 import { Button } from "../../../shared/ui/Button/Button";
 import { EmptyState } from "../../../shared/ui/Feedback/EmptyState";
 import { Spinner } from "../../../shared/ui/Feedback/Spinner";
+import { LikeButton } from "../../likes/components/LikeButton";
 import { PostList } from "../components/PostList";
 import { useFeed } from "../hooks/useFeed";
 import styles from "./FeedPage.module.css";
@@ -40,7 +41,11 @@ export function FeedPage() {
       >
         {(posts) => (
           <>
-            <PostList posts={posts} label="Fil d'actualité" />
+            <PostList
+              posts={posts}
+              label="Fil d'actualité"
+              renderActions={(post) => <LikeButton post={post} />}
+            />
 
             <div ref={sentinelRef} className={styles.sentinel} aria-hidden="true" />
 
