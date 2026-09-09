@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { fetchPostsPage } from './post.api.ts'
 import type { Post } from './post.schema.ts'
 
-type FeedState =
+export type FeedState =
   | { status: 'loading' }
   | { status: 'error'; message: string }
   | { status: 'empty' }
@@ -13,7 +13,11 @@ type StoredFeedState = FeedState & {
   requestPage: number
 }
 
-export function usePostFeed(page: number, limit: number): FeedState {
+export function usePostFeed(
+  page: number,
+  limit: number,
+  refreshVersion: number,
+): FeedState {
   const [state, setState] = useState<StoredFeedState>({
     status: 'loading',
     requestPage: page,
@@ -46,7 +50,7 @@ export function usePostFeed(page: number, limit: number): FeedState {
       })
 
     return () => controller.abort()
-  }, [page, limit])
+  }, [page, limit, refreshVersion])
 
   return state.requestPage === page ? state : { status: 'loading' }
 }
