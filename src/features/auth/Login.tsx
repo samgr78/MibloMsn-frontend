@@ -82,7 +82,7 @@ function Login(): ReactElement {
 
       localStorage.setItem('token', loginResponse.token)
       localStorage.setItem('username', loginResponse.username)
-      navigate('/home')
+      navigate('/feed')
     } catch (error: unknown) {
       setErrors(getLoginErrors(error))
     } finally {

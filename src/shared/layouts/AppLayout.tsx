@@ -12,7 +12,7 @@ function AppLayout(): ReactElement {
   return (
     <main className="app-layout">
       <nav className="app-navigation" aria-label="Main navigation">
-        <NavLink to="/home">Home</NavLink>
+        <NavLink to="/feed">Feed</NavLink>
       </nav>
 
       <section className="app-content">

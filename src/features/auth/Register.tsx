@@ -66,7 +66,7 @@ function Register(): ReactElement {
             if (registerResponse) {
                 localStorage.setItem('token', registerResponse.token)
                 localStorage.setItem('username', registerResponse.username)
-                navigate('/home')
+                navigate('/feed')
                 return
             }
 
