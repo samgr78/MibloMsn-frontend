@@ -37,7 +37,15 @@ function AppLayout(): ReactElement {
             alt=""
           />
           <span>MiBLo Messenger</span>
+          <span className="app-window-controls" aria-hidden="true">
+            <span>_</span><span>□</span><span>×</span>
+          </span>
         </header>
+
+        <div className="app-navigation-menu" aria-hidden="true">
+          <span>File</span><span>Contacts</span><span>Actions</span>
+          <span>Tools</span><span>Help</span>
+        </div>
 
         <NavLink
           to="/profile"
@@ -56,7 +64,9 @@ function AppLayout(): ReactElement {
           </div>
         </NavLink>
 
-        <p className="app-navigation-label">My activities</p>
+        <p className="app-navigation-label">
+          <span aria-hidden="true">⌃</span> Online (2)
+        </p>
 
         <div className="app-navigation-links">
           <NavLink to="/feed">
@@ -74,15 +84,43 @@ function AppLayout(): ReactElement {
         </div>
 
         <footer className="app-navigation-footer">
+          <strong className="app-navigation-footer-title">I want to...</strong>
           <button type="button" onClick={logout}>
-            <span aria-hidden="true">×</span>
+            <span className="app-navigation-signout-icon" aria-hidden="true">×</span>
             <span className="app-navigation-link-text">Sign out</span>
           </button>
+          <div className="app-navigation-ad" aria-hidden="true">
+            <img src="/msn-boneco-vector-logo.png" alt="" />
+            <span><strong>MiBLo</strong><small>Stay connected!</small></span>
+          </div>
         </footer>
       </nav>
 
-      <section className="app-content">
-        <Outlet />
+      <section className="app-workspace">
+        <header className="app-workspace-titlebar">
+          <img src="/msn-boneco-vector-logo.png" alt="" />
+          <span>MiBLo - Conversation</span>
+          <span className="app-window-controls" aria-hidden="true">
+            <span>_</span><span>□</span><span>×</span>
+          </span>
+        </header>
+
+        <div className="app-workspace-menu" aria-hidden="true">
+          <span>File</span><span>Edit</span><span>Actions</span>
+          <span>Tools</span><span>Help</span>
+        </div>
+
+        <div className="app-workspace-toolbar" aria-hidden="true">
+          <span><b>☺</b>Invite</span>
+          <span><b>✉</b>Send Files</span>
+          <span><b>◉</b>Webcam</span>
+          <span><b>♫</b>Audio</span>
+          <span><b>★</b>Activities</span>
+        </div>
+
+        <section className="app-content">
+          <Outlet />
+        </section>
       </section>
     </main>
   )

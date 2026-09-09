@@ -3,8 +3,8 @@
     margin: 0 auto;
     overflow: hidden;
     color: #20334f;
-    border: 1px solid #234f89;
-    border-radius: 7px 7px 4px 4px;
+    border: 1px solid #6e91bc;
+    border-radius: 4px;
     background: linear-gradient(90deg, #f8fbff 0%, #dce8f8 50%, #f8fbff 100%);
     box-shadow:
         inset 1px 1px 0 #ffffff,
@@ -20,7 +20,9 @@
     color: #ffffff;
     font-weight: var(--msn-font-bold);
     border-bottom: 1px solid #163c73;
-    background: linear-gradient(180deg, #6f9bd2 0%, #2f65a6 48%, #1d477e 100%);
+    background:
+        radial-gradient(circle at 70% 0%, rgb(112 226 239 / 65%), transparent 34%),
+        linear-gradient(180deg, #83c6e7 0%, #3b94c8 52%, #2778b0 100%);
     text-shadow: 1px 1px 0 #173b69;
 }
 
@@ -35,10 +37,11 @@
     align-items: center;
     gap: 18px;
     padding: 24px 28px;
-    border-bottom: 1px solid #a7bad5;
+    border-bottom: 1px solid #8faecc;
     background:
-        radial-gradient(circle at 12% 20%, rgb(255 255 255 / 95%), transparent 30%),
-        linear-gradient(135deg, #edf5ff 0%, #c7d9ef 100%);
+        radial-gradient(circle at 12% 20%, rgb(255 255 255 / 98%), transparent 31%),
+        radial-gradient(circle at 88% 5%, rgb(90 213 225 / 42%), transparent 36%),
+        linear-gradient(135deg, #edfaff 0%, #c8e6f3 100%);
 }
 
 .profile-avatar {
@@ -116,9 +119,9 @@
     justify-content: space-between;
     min-height: 34px;
     padding: 6px 10px;
-    color: #ffffff;
-    border-bottom: 1px solid #163c73;
-    background: linear-gradient(180deg, #6f9bd2 0%, #2f65a6 52%, #1d477e 100%);
+    color: #153b73;
+    border-bottom: 1px solid #9db5d8;
+    background: linear-gradient(180deg, #ffffff 0%, #d7e8f7 58%, #c2daec 100%);
 }
 
 .profile-posts-panel > header h2 {
@@ -130,12 +133,13 @@
     min-width: 24px;
     height: 20px;
     padding-inline: 5px;
-    color: #173d75;
+    color: #ffffff;
     font-weight: var(--msn-font-bold);
     place-items: center;
-    border: 1px solid #ffffff;
+    border: 1px solid #286b9f;
     border-radius: 10px;
-    background-color: #edf4fd;
+    background: linear-gradient(180deg, #68b9d7 0%, #287fae 100%);
+    box-shadow: inset 1px 1px 0 rgb(255 255 255 / 55%);
 }
 
 .profile-post-list {
