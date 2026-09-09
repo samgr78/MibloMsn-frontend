@@ -22,6 +22,21 @@
         2px 3px 8px rgb(36 81 138 / 18%);
 }
 
+.post-card-detail-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.post-card-detail-link:hover .post-card-body {
+    background: linear-gradient(180deg, #ffffff 0%, #e9f5ff 100%);
+}
+
+.post-card-detail-link:focus-visible {
+    outline: 2px solid #f2a900;
+    outline-offset: -3px;
+}
+
 .post-card-header,
 .post-card-stats,
 .post-feed-pagination {

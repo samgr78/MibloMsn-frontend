@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react'
+import { Link } from 'react-router-dom'
 import { resolveApiUrl } from '../../api/axios.tsx'
 import type { Post } from '../../features/feed/post.schema.ts'
 import { LikeButton } from '../../features/likes/LikeButton.tsx'
@@ -8,6 +9,7 @@ type PostCardProps = {
   post: Post
   onLikeChange?: (isLiked: boolean) => void
   onDelete?: () => void
+  linkToDetail?: boolean
 }
 
 function formatPostDate(createdAt: string): string {
@@ -21,11 +23,12 @@ export function PostCard({
   post,
   onLikeChange,
   onDelete,
+  linkToDetail = true,
 }: PostCardProps): ReactElement {
   const authorInitial = post.author.username.charAt(0).toUpperCase()
 
-  return (
-    <article className="post-card">
+  const postContent = (
+    <>
       <header className="post-card-header">
         <div className="post-card-author">
           <span className="post-card-avatar" aria-hidden="true">
@@ -56,6 +59,16 @@ export function PostCard({
           </div>
         )}
       </div>
+    </>
+  )
+
+  return (
+    <article className="post-card">
+      {linkToDetail ? (
+        <Link className="post-card-detail-link" to={`/posts/${post.id}`}>
+          {postContent}
+        </Link>
+      ) : postContent}
 
       <footer className="post-card-stats">
         <LikeButton post={post} onLikeChange={onLikeChange} />
