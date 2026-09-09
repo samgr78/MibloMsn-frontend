@@ -11,7 +11,7 @@
 
 .create-post-button {
     position: fixed;
-    top: 126px;
+    top: 48px;
     right: 28px;
     z-index: 20;
     display: inline-flex;
@@ -65,7 +65,7 @@
 
 @media (max-width: 600px) {
     .create-post-button {
-        top: 106px;
+        top: 44px;
         right: 12px;
     }
 }

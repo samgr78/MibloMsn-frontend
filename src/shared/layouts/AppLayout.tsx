@@ -42,11 +42,6 @@ function AppLayout(): ReactElement {
           </span>
         </header>
 
-        <div className="app-navigation-menu" aria-hidden="true">
-          <span>File</span><span>Contacts</span><span>Actions</span>
-          <span>Tools</span><span>Help</span>
-        </div>
-
         <NavLink
           to="/profile"
           className="app-navigation-profile"
@@ -104,19 +99,6 @@ function AppLayout(): ReactElement {
             <span>_</span><span>□</span><span>×</span>
           </span>
         </header>
-
-        <div className="app-workspace-menu" aria-hidden="true">
-          <span>File</span><span>Edit</span><span>Actions</span>
-          <span>Tools</span><span>Help</span>
-        </div>
-
-        <div className="app-workspace-toolbar" aria-hidden="true">
-          <span><b>☺</b>Invite</span>
-          <span><b>✉</b>Send Files</span>
-          <span><b>◉</b>Webcam</span>
-          <span><b>♫</b>Audio</span>
-          <span><b>★</b>Activities</span>
-        </div>
 
         <section className="app-content">
           <Outlet />
