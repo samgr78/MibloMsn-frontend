@@ -18,6 +18,7 @@ function AppLayout(): ReactElement {
       <section className="app-content">
         <Outlet />
       </section>
+
     </main>
   )
 }

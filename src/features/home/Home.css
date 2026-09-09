@@ -1,0 +1,6 @@
+.post-success-message {
+    padding: 10px 12px;
+    color: #176b2c;
+    border: 1px solid var(--msn-green);
+    background-color: #e8f7eb;
+}

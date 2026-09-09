@@ -1,6 +1,7 @@
 import { useState, type ChangeEvent, type FormEvent, type ReactElement } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../../api/axios.tsx'
+import Form from '../../shared/components/Form.tsx'
 import Input from '../../shared/components/Input.tsx'
 import { getLoginErrors, parseLoginResponse } from './login.parsers.ts'
 import type {
@@ -92,7 +93,7 @@ function Login(): ReactElement {
 
   return (
     <main className="login-page">
-      <form className="login-form" onSubmit={handleSubmit}>
+      <Form className="login-form" onSubmit={handleSubmit}>
         <div className="login-header">
           <div className="logo-frame">
             <img src="/msn-boneco-vector-logo.png" alt="Logo MSN" />
@@ -186,7 +187,7 @@ function Login(): ReactElement {
             <Link to="/register">Get a new account</Link>
           </div>
         </div>
-      </form>
+      </Form>
     </main>
   )
 }
