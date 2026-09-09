@@ -1,15 +1,13 @@
 import { useState, type ReactElement } from 'react'
 import type { Post } from '../feed/post.schema.ts'
 import { getLikeErrorMessage, updatePostLike } from './likes.api.ts'
-import { hasStoredLike, storeLike } from './likes.storage.ts'
 
 type LikeButtonProps = {
   post: Post
 }
 
 export function LikeButton({ post }: LikeButtonProps): ReactElement {
-  const initiallyLiked = post.likedByMe || hasStoredLike(post.id)
-  const [isLiked, setIsLiked] = useState<boolean>(initiallyLiked)
+  const [isLiked, setIsLiked] = useState<boolean>(post.likedByMe)
   const [likeCount, setLikeCount] = useState<number>(post.likeCount)
   const [isPending, setIsPending] = useState<boolean>(false)
   const [errorMessage, setErrorMessage] = useState<string>('')
@@ -28,8 +26,9 @@ export function LikeButton({ post }: LikeButtonProps): ReactElement {
     setIsPending(true)
 
     try {
-      await updatePostLike(post.id, nextIsLiked)
-      storeLike(post.id, nextIsLiked)
+      const likeState = await updatePostLike(post.id, nextIsLiked)
+      setIsLiked(likeState.likedByMe)
+      setLikeCount(likeState.likeCount)
     } catch (error: unknown) {
       setIsLiked(isLiked)
       setLikeCount(likeCount)

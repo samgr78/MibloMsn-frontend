@@ -11,7 +11,13 @@ export const PostSchema = z.object({
   }),
   likeCount: z.number().int().nonnegative(),
   commentCount: z.number().int().nonnegative(),
-  likedByMe: z.boolean().optional().default(false),
+  likedByMe: z.boolean(),
+})
+
+export const LikeStateSchema = z.object({
+  postId: z.string(),
+  likeCount: z.number().int().nonnegative(),
+  likedByMe: z.boolean(),
 })
 
 export const PostPageResponseSchema = z.object({
@@ -21,3 +27,4 @@ export const PostPageResponseSchema = z.object({
 
 export type Post = z.infer<typeof PostSchema>
 export type PostPageResponse = z.infer<typeof PostPageResponseSchema>
+export type LikeState = z.infer<typeof LikeStateSchema>
