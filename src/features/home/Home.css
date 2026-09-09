@@ -4,3 +4,14 @@
     border: 1px solid var(--msn-green);
     background-color: #e8f7eb;
 }
+
+.btn-modal{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 30px;
+    background-color: var(--msn-green);
+    color: var(--msn-link);
+    border-bottom: 2px solid var(--msn-orange);
+
+}

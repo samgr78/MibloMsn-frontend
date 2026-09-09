@@ -104,8 +104,8 @@ function Home(): ReactElement {
 
   return (
     <div>
-      <button type="button" onClick={openModal}>
-        Open modal
+      <button type="button" className="btn-modal" onClick={openModal}>
+        Create a post
       </button>
 
       {successMessage && (
