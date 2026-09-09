@@ -1,4 +1,8 @@
-import type { ComponentPropsWithoutRef, HTMLInputTypeAttribute } from 'react'
+import type {
+  ComponentPropsWithoutRef,
+  HTMLInputTypeAttribute,
+  ReactElement,
+} from 'react'
 
 type InputProps = ComponentPropsWithoutRef<'input'> & {
   type?: HTMLInputTypeAttribute
@@ -17,19 +21,19 @@ function Input({
   id,
   className,
   ...props
-}: InputProps) {
+}: InputProps): ReactElement {
   return (
-      <label>
-        {label}
-        <input
-          {...props}
-          type={type}
-          placeholder={placeholder}
-          name={name}
-          id={id}
-          className={className}
-        />
-      </label>
+    <label>
+      {label}
+      <input
+        {...props}
+        type={type}
+        placeholder={placeholder}
+        name={name}
+        id={id}
+        className={className}
+      />
+    </label>
   )
 }
 
