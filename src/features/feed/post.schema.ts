@@ -11,6 +11,7 @@ export const PostSchema = z.object({
   }),
   likeCount: z.number().int().nonnegative(),
   commentCount: z.number().int().nonnegative(),
+  likedByMe: z.boolean().optional().default(false),
 })
 
 export const PostPageResponseSchema = z.object({

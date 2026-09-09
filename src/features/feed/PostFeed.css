@@ -130,6 +130,66 @@
     background: linear-gradient(180deg, #f7faff 0%, var(--msn-bg-secondary) 100%);
 }
 
+.post-like {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.post-like-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 48px;
+    padding: 3px 8px;
+    color: #173d75;
+    font: inherit;
+    cursor: pointer;
+    border: 1px solid #7895bd;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #ffffff 0%, #dce8f8 55%, #b7cbe5 100%);
+    box-shadow:
+        inset 1px 1px 0 #ffffff,
+        inset -1px -1px 0 #829fc5;
+}
+
+.post-like-button:hover:not(:disabled) {
+    border-color: #4a945b;
+    background: linear-gradient(180deg, #ffffff 0%, #dcf4e1 55%, #a4d9af 100%);
+}
+
+.post-like-button:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow: inset 1px 1px 2px rgb(31 63 105 / 28%);
+}
+
+.post-like-button:focus-visible {
+    outline: 2px solid var(--msn-border-active);
+    outline-offset: 2px;
+}
+
+.post-like-button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.post-like-button--active {
+    color: #a31827;
+    font-weight: var(--msn-font-bold);
+    border-color: #bf6872;
+    background: linear-gradient(180deg, #fffafa 0%, #f6dadd 55%, #e8b3b9 100%);
+}
+
+.post-like-icon {
+    font-size: var(--msn-font-size-title);
+    line-height: 1;
+}
+
+.post-like-error {
+    color: #a31827;
+    font-size: var(--msn-font-size-xs);
+}
+
 .post-feed-pagination {
     justify-content: center;
     margin-top: 20px;
