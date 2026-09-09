@@ -8,16 +8,21 @@ import {
 import Form from '../../shared/components/Form.tsx'
 import Input from '../../shared/components/Input.tsx'
 import { PostCard } from '../../shared/components/PostCard.tsx'
+import { DeleteCommentButton } from '../comments/DeleteCommentButton.tsx'
 import type { Post } from '../feed/post.schema.ts'
 import {
   fetchLikedPosts,
+  fetchOwnComments,
   fetchOwnPosts,
   fetchProfile,
   getProfileApiError,
   savePassword,
   saveProfile,
 } from './profile.api.ts'
-import type { Profile as ProfileData } from './profile.schema.ts'
+import type {
+  Profile as ProfileData,
+  ProfileComment,
+} from './profile.schema.ts'
 import './Profile.css'
 
 type IdentityFormData = {
@@ -30,7 +35,7 @@ type PasswordFormData = {
   newPassword: string
 }
 
-type PostSection = 'own' | 'liked'
+type PostSection = 'own' | 'liked' | 'comments'
 
 type ProfilePostListProps = {
   posts: Post[]
@@ -78,10 +83,48 @@ function ProfilePostList({
   )
 }
 
+type ProfileCommentListProps = {
+  comments: ProfileComment[]
+  onDelete: (commentId: string) => void
+}
+
+function ProfileCommentList({
+  comments,
+  onDelete,
+}: ProfileCommentListProps): ReactElement {
+  if (comments.length === 0) {
+    return <p className="profile-empty-posts">You have not written a comment yet.</p>
+  }
+
+  return (
+    <ul className="profile-comment-list">
+      {comments.map((comment) => (
+        <li key={comment.id}>
+          <header>
+            <strong>Comment on:</strong>
+            <span>{comment.post.content}</span>
+            <time dateTime={comment.createdAt}>
+              {new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' }).format(
+                new Date(comment.createdAt),
+              )}
+            </time>
+          </header>
+          <p>{comment.content}</p>
+          <DeleteCommentButton
+            commentId={comment.id}
+            onDeleted={() => onDelete(comment.id)}
+          />
+        </li>
+      ))}
+    </ul>
+  )
+}
+
 function Profile(): ReactElement {
   const [profile, setProfile] = useState<ProfileData | null>(null)
   const [ownPosts, setOwnPosts] = useState<Post[]>([])
   const [likedPosts, setLikedPosts] = useState<Post[]>([])
+  const [ownComments, setOwnComments] = useState<ProfileComment[]>([])
   const [identityForm, setIdentityForm] =
     useState<IdentityFormData>(emptyIdentityForm)
   const [passwordForm, setPasswordForm] =
@@ -102,11 +145,18 @@ function Profile(): ReactElement {
       fetchProfile(controller.signal),
       fetchOwnPosts(controller.signal),
       fetchLikedPosts(controller.signal),
+      fetchOwnComments(controller.signal),
     ])
-      .then(([loadedProfile, loadedOwnPosts, loadedLikedPosts]) => {
+      .then(([
+        loadedProfile,
+        loadedOwnPosts,
+        loadedLikedPosts,
+        loadedOwnComments,
+      ]) => {
         setProfile(loadedProfile)
         setOwnPosts(loadedOwnPosts)
         setLikedPosts(loadedLikedPosts)
+        setOwnComments(loadedOwnComments)
         setIdentityForm({
           username: loadedProfile.username,
           email: loadedProfile.email,
@@ -293,6 +343,16 @@ function Profile(): ReactElement {
           <button
             type="button"
             role="tab"
+            aria-selected={activePostSection === 'comments'}
+            onClick={() => setActivePostSection('comments')}
+          >
+            <span aria-hidden="true">✉</span>
+            My comments
+            <strong>{ownComments.length}</strong>
+          </button>
+          <button
+            type="button"
+            role="tab"
             aria-selected={activePostSection === 'liked'}
             onClick={() => setActivePostSection('liked')}
           >
@@ -305,15 +365,27 @@ function Profile(): ReactElement {
         <div className="profile-posts-panel" role="tabpanel">
           <header>
             <div>
-              <h2>{activePostSection === 'own' ? 'My posts' : 'Liked posts'}</h2>
+              <h2>
+                {activePostSection === 'own'
+                  ? 'My posts'
+                  : activePostSection === 'liked'
+                    ? 'Liked posts'
+                    : 'My comments'}
+              </h2>
               <p>
                 {activePostSection === 'own'
                   ? 'Posts you have shared on MiBLo.'
-                  : 'Posts you saved with a like.'}
+                  : activePostSection === 'liked'
+                    ? 'Posts you saved with a like.'
+                    : 'Comments you have shared on MiBLo.'}
               </p>
             </div>
             <span>
-              {activePostSection === 'own' ? ownPosts.length : likedPosts.length}
+              {activePostSection === 'own'
+                ? ownPosts.length
+                : activePostSection === 'liked'
+                  ? likedPosts.length
+                  : ownComments.length}
             </span>
           </header>
 
@@ -330,13 +402,22 @@ function Profile(): ReactElement {
                 )
               }}
             />
-          ) : (
+          ) : activePostSection === 'liked' ? (
             <ProfilePostList
               posts={likedPosts}
               emptyMessage="You have not liked a post yet."
               onUnlike={(postId) =>
                 setLikedPosts((posts) =>
                   posts.filter((post) => post.id !== postId),
+                )
+              }
+            />
+          ) : (
+            <ProfileCommentList
+              comments={ownComments}
+              onDelete={(commentId) =>
+                setOwnComments((comments) =>
+                  comments.filter((comment) => comment.id !== commentId),
                 )
               }
             />

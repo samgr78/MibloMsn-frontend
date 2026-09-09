@@ -155,6 +155,10 @@
     color: #ae2635;
 }
 
+.profile-post-tabs button:nth-child(3) > span {
+    color: #d27922;
+}
+
 .profile-post-tabs button strong {
     display: grid;
     min-width: 20px;
@@ -228,6 +232,84 @@
     color: #526b8b;
     text-align: center;
     background-color: #ffffff;
+}
+
+.profile-comment-list {
+    display: grid;
+    gap: 10px;
+    padding: 14px;
+    list-style: none;
+}
+
+.profile-comment-list > li {
+    overflow: hidden;
+    color: #202020;
+    border: 1px solid #7895bd;
+    border-radius: 4px;
+    background-color: #ffffff;
+    box-shadow: 1px 2px 4px rgb(36 81 138 / 15%);
+}
+
+.profile-comment-list header {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 6px;
+    padding: 7px 9px;
+    color: #294d7d;
+    border-bottom: 1px solid #a7bad5;
+    background: linear-gradient(180deg, #f8fbff 0%, #dce8f8 100%);
+}
+
+.profile-comment-list header > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile-comment-list time {
+    color: #617895;
+    font-size: var(--msn-font-size-xs);
+}
+
+.profile-comment-list > li > p {
+    padding: 13px;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.profile-comment-delete {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 7px 9px;
+    border-top: 1px solid #d1ddeb;
+    background-color: #f4f7fb;
+}
+
+.profile-comment-delete button {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 9px;
+    color: #8b1d28;
+    font: inherit;
+    cursor: pointer;
+    border: 1px solid #a7656d;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #ffffff 0%, #f1d3d7 100%);
+}
+
+.profile-comment-delete button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.profile-comment-delete p {
+    color: #a31827;
+    font-size: var(--msn-font-size-xs);
 }
 
 .profile-panel {
@@ -357,5 +439,14 @@
 
     .profile-post-list {
         padding: 8px;
+    }
+
+    .profile-post-tabs button {
+        gap: 4px;
+        font-size: var(--msn-font-size-xs);
+    }
+
+    .profile-comment-list header {
+        grid-template-columns: 1fr;
     }
 }

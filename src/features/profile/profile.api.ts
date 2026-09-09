@@ -2,10 +2,12 @@ import { isAxiosError } from 'axios'
 import { api } from '../../api/axios.tsx'
 import {
   PasswordUpdateResponseSchema,
+  ProfileCommentsResponseSchema,
   ProfileErrorSchema,
   ProfilePostsResponseSchema,
   ProfileSchema,
   type Profile,
+  type ProfileComment,
   type ProfileField,
 } from './profile.schema.ts'
 import type { Post } from '../feed/post.schema.ts'
@@ -56,6 +58,20 @@ export function fetchOwnPosts(signal: AbortSignal): Promise<Post[]> {
 
 export function fetchLikedPosts(signal: AbortSignal): Promise<Post[]> {
   return fetchProfilePosts('/profile/liked-posts', signal)
+}
+
+export async function fetchOwnComments(
+  signal: AbortSignal,
+): Promise<ProfileComment[]> {
+  const { data }: { data: unknown } = await api.get<unknown>(
+    '/profile/comments',
+    { headers: getAuthorizationHeader(), signal },
+  )
+  const result = ProfileCommentsResponseSchema.safeParse(data)
+  if (!result.success) {
+    throw new Error('The server returned an invalid comment list.')
+  }
+  return result.data.comments
 }
 
 export async function saveProfile(

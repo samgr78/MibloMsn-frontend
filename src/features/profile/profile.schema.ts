@@ -12,6 +12,20 @@ export const ProfilePostsResponseSchema = z.object({
   posts: z.array(PostSchema),
 })
 
+export const ProfileCommentSchema = z.object({
+  id: z.string(),
+  content: z.string(),
+  createdAt: z.string(),
+  post: z.object({
+    id: z.string(),
+    content: z.string(),
+  }),
+})
+
+export const ProfileCommentsResponseSchema = z.object({
+  comments: z.array(ProfileCommentSchema),
+})
+
 export const PasswordUpdateResponseSchema = z.object({
   success: z.literal(true),
 })
@@ -24,4 +38,5 @@ export const ProfileErrorSchema = z.object({
 })
 
 export type Profile = z.infer<typeof ProfileSchema>
+export type ProfileComment = z.infer<typeof ProfileCommentSchema>
 export type ProfileField = z.infer<typeof ProfileErrorSchema>['field']
