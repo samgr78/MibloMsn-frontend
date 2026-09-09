@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App.tsx";
+import { AppProviders } from "./app/providers";
 
 const container = document.getElementById("root");
 
@@ -13,7 +14,9 @@ if (container === null) {
 createRoot(container).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <AppProviders>
+        <App />
+      </AppProviders>
     </BrowserRouter>
   </StrictMode>,
 );
