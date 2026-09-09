@@ -113,7 +113,10 @@ function CreatePost({ onPostCreated }: CreatePostProps): ReactElement {
         className="create-post-button"
         onClick={openModal}
       >
-        Create a post
+        <span className="create-post-button-icon" aria-hidden="true">
+          +
+        </span>
+        <span>Create a post</span>
       </button>
 
       {successMessage && (

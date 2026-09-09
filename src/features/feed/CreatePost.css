@@ -10,13 +10,62 @@
 }
 
 .create-post-button {
-    display: flex;
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 20;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 5px 30px;
-    color: var(--msn-link);
+    gap: 8px;
+    min-height: 38px;
+    padding: 7px 18px;
+    color: #174f27;
+    font: inherit;
+    font-weight: var(--msn-font-bold);
     cursor: pointer;
-    border: 1px solid var(--msn-border-active);
-    border-bottom: 2px solid var(--msn-orange);
-    background-color: var(--msn-green);
+    border: 1px solid #4a945b;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #f4fff5 0%, #bce8c4 48%, #82cb91 100%);
+    box-shadow:
+        inset 1px 1px 0 #ffffff,
+        inset -1px -1px 0 #4f9b60,
+        1px 2px 3px rgb(26 86 41 / 25%);
+}
+
+.create-post-button:hover {
+    color: #0d3f1b;
+    background: linear-gradient(180deg, #ffffff 0%, #d4f3da 48%, #96d7a3 100%);
+}
+
+.create-post-button:active {
+    transform: translateY(1px);
+    background: linear-gradient(180deg, #79bd87 0%, #b6e3be 100%);
+    box-shadow: inset 1px 1px 2px rgb(26 86 41 / 35%);
+}
+
+.create-post-button:focus-visible {
+    outline: 2px solid var(--msn-border-active);
+    outline-offset: 2px;
+}
+
+.create-post-button-icon {
+    display: grid;
+    width: 20px;
+    height: 20px;
+    color: #176b2c;
+    font-size: 17px;
+    line-height: 1;
+    place-items: center;
+    border: 1px solid #438c54;
+    border-radius: 3px;
+    background-color: #effff1;
+    box-shadow: inset 1px 1px 0 #ffffff;
+}
+
+@media (max-width: 600px) {
+    .create-post-button {
+        top: 14px;
+        right: 14px;
+    }
 }
