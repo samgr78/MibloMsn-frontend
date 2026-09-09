@@ -1,3 +1,4 @@
+import type { Session } from "../features/auth/api/auth.schemas";
 import type { Post } from "../features/posts/api/posts.schemas";
 
 let sequence = 0;
@@ -33,4 +34,11 @@ export function firstOf<T>(items: ReadonlyArray<T>): T {
   }
 
   return first;
+}
+
+/** A session valid against SessionSchema, for signed-in screens. */
+export function makeSession(
+  user: { id: string; username: string } = { id: "user-connecte", username: "moi" },
+): Session {
+  return { token: "jeton-de-test", user };
 }

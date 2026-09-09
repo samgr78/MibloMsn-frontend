@@ -7,6 +7,7 @@ import { LoginPage } from "./features/auth/pages/LoginPage";
 import { RegisterPage } from "./features/auth/pages/RegisterPage";
 import { FeedPage } from "./features/posts/pages/FeedPage";
 import { PostDetailPage } from "./features/posts/pages/PostDetailPage";
+import { ProfilePage } from "./features/users/pages/ProfilePage";
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
         <Route element={<AppLayout />}>
           <Route path="/feed" element={<FeedPage />} />
           <Route path="/posts/:postId" element={<PostDetailPage />} />
+          <Route path="/users/:userId" element={<ProfilePage />} />
         </Route>
       </Route>
 

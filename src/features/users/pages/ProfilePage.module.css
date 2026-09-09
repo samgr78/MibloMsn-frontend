@@ -1,0 +1,39 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--msn-space-3);
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  gap: var(--msn-space-4);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--msn-space-1);
+}
+
+.username {
+  margin: 0;
+  font-size: var(--msn-font-size-lg);
+}
+
+.since {
+  margin: 0;
+  font-size: var(--msn-font-size-xs);
+  color: var(--msn-text-muted);
+}
+
+.badge {
+  margin: 0;
+  align-self: flex-start;
+  font-size: var(--msn-font-size-xs);
+  color: var(--msn-header);
+  border: 1px solid var(--msn-border);
+  border-radius: var(--msn-radius);
+  padding: 0 var(--msn-space-2);
+  background: var(--msn-bg-selected);
+}

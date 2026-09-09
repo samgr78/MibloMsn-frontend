@@ -3,9 +3,15 @@ import { render, type RenderOptions, type RenderResult } from "@testing-library/
 import type { ReactElement } from "react";
 import { MemoryRouter } from "react-router-dom";
 import { AppProviders } from "../app/providers";
+import type { Session } from "../features/auth/api/auth.schemas";
+import { writeSession } from "../features/auth/session.storage";
 
 type Options = Omit<RenderOptions, "wrapper"> & {
   route?: string;
+  /** Session installed before mounting. It goes through real storage and
+   *  the same validated read as in production, so a test cannot forge a
+   *  session the app would reject. */
+  session?: Session;
 };
 
 /** Test client: no retries, so an expected error surfaces at once, and
@@ -22,9 +28,14 @@ function createTestQueryClient(): QueryClient {
 /** Mounts a component with the app's real provider stack, on a memory router. */
 export function renderWithProviders(
   ui: ReactElement,
-  { route = "/", ...options }: Options = {},
+  { route = "/", session, ...options }: Options = {},
 ): RenderResult {
   const queryClient = createTestQueryClient();
+
+  // Before render: `AuthProvider` reads storage in its lazy initialiser.
+  if (session !== undefined) {
+    writeSession(session);
+  }
 
   return render(ui, {
     wrapper: ({ children }) => (

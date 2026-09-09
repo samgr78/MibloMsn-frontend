@@ -1,0 +1,16 @@
+.sentinel {
+  height: 1px;
+}
+
+.more {
+  display: flex;
+  justify-content: center;
+  padding: var(--msn-space-2) 0;
+}
+
+.end {
+  text-align: center;
+  font-size: var(--msn-font-size-xs);
+  color: var(--msn-text-muted);
+  padding: var(--msn-space-2) 0;
+}
