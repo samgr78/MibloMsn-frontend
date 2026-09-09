@@ -1,5 +1,10 @@
 import { fetchJson } from "../../../shared/api/http";
-import { PostPageSchema, type PostPage } from "./posts.schemas";
+import {
+  PostDetailSchema,
+  PostPageSchema,
+  type PostDetail,
+  type PostPage,
+} from "./posts.schemas";
 
 export const PAGE_SIZE = 20;
 
@@ -28,4 +33,8 @@ export function fetchUserPosts(
     schema: PostPageSchema,
     signal,
   });
+}
+
+export function fetchPost(postId: string, signal?: AbortSignal): Promise<PostDetail> {
+  return fetchJson(`/posts/${postId}`, { schema: PostDetailSchema, signal });
 }

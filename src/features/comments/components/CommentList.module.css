@@ -1,0 +1,42 @@
+.comment {
+  display: flex;
+  gap: var(--msn-space-2);
+  padding: var(--msn-space-2) 0;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--msn-space-2);
+}
+
+.author {
+  font-weight: var(--msn-font-bold);
+  color: var(--msn-text);
+  text-decoration: none;
+}
+
+.author:hover {
+  text-decoration: underline;
+}
+
+.date {
+  font-size: var(--msn-font-size-xs);
+  color: var(--msn-text-muted);
+}
+
+.text {
+  margin: 2px 0 0;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+}
