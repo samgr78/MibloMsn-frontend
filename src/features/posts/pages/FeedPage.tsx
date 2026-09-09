@@ -6,6 +6,7 @@ import { Button } from "../../../shared/ui/Button/Button";
 import { EmptyState } from "../../../shared/ui/Feedback/EmptyState";
 import { Spinner } from "../../../shared/ui/Feedback/Spinner";
 import { LikeButton } from "../../likes/components/LikeButton";
+import { CreatePostForm } from "../components/CreatePostForm";
 import { PostList } from "../components/PostList";
 import { useFeed } from "../hooks/useFeed";
 import styles from "./FeedPage.module.css";
@@ -29,6 +30,8 @@ export function FeedPage() {
   return (
     <div className={styles.page}>
       <h1>Fil d'actualité</h1>
+
+      <CreatePostForm />
 
       <ScreenStateView
         state={state}

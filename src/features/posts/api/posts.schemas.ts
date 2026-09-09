@@ -65,3 +65,32 @@ export const CreatePostSchema = z.object({
 });
 
 export type CreatePostInput = z.infer<typeof CreatePostSchema>;
+
+/**
+ * Contraintes d'image reprises telles quelles du backend (multer).
+ * Re-checking here is not redundant: it avoids uploading 5 MB only to be
+ * refused, and puts the error on the right field. The server stays the
+ * only authority.
+ */
+export const POST_IMAGE_MAX_BYTES = 2 * 1024 * 1024;
+
+export const POST_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
+
+export const POST_IMAGE_ACCEPT = POST_IMAGE_TYPES.join(",");
+
+const PostImageSchema = z
+  .instanceof(File)
+  .refine((file) => POST_IMAGE_TYPES.some((type) => type === file.type), {
+    message: "Format non supporté (JPEG, PNG ou WebP)",
+  })
+  .refine((file) => file.size <= POST_IMAGE_MAX_BYTES, {
+    message: "Image trop volumineuse (2 Mo maximum)",
+  })
+  .nullable();
+
+/** What the publish form handles: the text plus the image. */
+export const CreatePostFormSchema = CreatePostSchema.extend({
+  image: PostImageSchema,
+});
+
+export type CreatePostFormInput = z.infer<typeof CreatePostFormSchema>;
