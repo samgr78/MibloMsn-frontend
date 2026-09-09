@@ -55,6 +55,15 @@
     border-radius: 5px;
     background: linear-gradient(180deg, #ffffff 0%, #eaf2fc 100%);
     box-shadow: inset 1px 1px 0 #ffffff;
+    text-decoration: none;
+}
+
+.app-navigation-profile:hover,
+.app-navigation-profile.active {
+    border-color: #4a945b;
+    box-shadow:
+        inset 1px 1px 0 #ffffff,
+        0 0 7px rgb(85 184 106 / 32%);
 }
 
 .app-navigation-avatar {
@@ -177,6 +186,32 @@
     color: #294d7d;
     border-top: 1px solid #9db5d8;
     background: linear-gradient(180deg, #edf4fd 0%, #cbdcf2 100%);
+}
+
+.app-navigation-footer button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    width: 100%;
+    min-height: 27px;
+    color: #8b1d28;
+    font: inherit;
+    cursor: pointer;
+    border: 1px solid #9b8790;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #ffffff 0%, #eadfe2 100%);
+    box-shadow: inset 1px 1px 0 #ffffff;
+}
+
+.app-navigation-footer button:hover {
+    border-color: #a33b47;
+    background: linear-gradient(180deg, #ffffff 0%, #f1d3d7 100%);
+}
+
+.app-navigation-footer button:focus-visible {
+    outline: 2px solid var(--msn-border-active);
+    outline-offset: 2px;
 }
 
 .app-content {
