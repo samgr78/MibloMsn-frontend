@@ -7,7 +7,7 @@ import { Avatar } from "../../../shared/ui/Avatar/Avatar";
 import { EmptyState } from "../../../shared/ui/Feedback/EmptyState";
 import { Window } from "../../../shared/ui/Window/Window";
 import { useAuth } from "../../auth/hooks/useAuth";
-import { LikeButton } from "../../likes/components/LikeButton";
+import { PostActions } from "../../posts/components/PostActions";
 import { PostStream } from "../../posts/components/PostStream";
 import { useUserPosts } from "../../posts/hooks/useFeed";
 import { useUser } from "../hooks/useUser";
@@ -70,7 +70,7 @@ export function ProfilePage() {
               query={posts}
               variant="profile"
               label={`Posts de ${profile.username}`}
-              renderActions={(post) => <LikeButton post={post} />}
+              renderActions={(post) => <PostActions post={post} />}
               empty={
                 <EmptyState
                   title={

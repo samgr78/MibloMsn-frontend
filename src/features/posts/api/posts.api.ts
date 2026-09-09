@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { fetchJson } from "../../../shared/api/http";
 import {
   PostDetailSchema,
@@ -61,4 +62,21 @@ export function createPost(
   }
 
   return fetchJson("/posts", { method: "POST", body, schema: PostSchema, signal });
+}
+
+/**
+ * Deletes a post.
+ *
+ * The backend answers 204 with no body, so the expected schema really is
+ * `undefined`: no response enters without validation, no exception.
+ *
+ * Ownership is checked by the server, which answers 403. Hiding the
+ * button is interface comfort, never protection.
+ */
+export function deletePost(postId: string, signal?: AbortSignal): Promise<undefined> {
+  return fetchJson(`/posts/${postId}`, {
+    method: "DELETE",
+    schema: z.undefined(),
+    signal,
+  });
 }

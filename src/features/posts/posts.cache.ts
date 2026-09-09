@@ -40,3 +40,22 @@ export function prependPost(queryClient: QueryClient, post: Post): void {
     index === 0 ? { ...page, items: [post, ...page.items] } : page,
   );
 }
+
+/**
+ * Removes a post from every list showing it.
+ *
+ * The detail is invalidated rather than dropped, so reopening its URL
+ * refetches and gets the 404. Left in cache it would still show for the
+ * configured 30 seconds of freshness.
+ */
+export function removePost(
+  queryClient: QueryClient,
+  post: Pick<Post, "id"> & { author: Pick<Post["author"], "id"> },
+): void {
+  updateLists(queryClient, post.author.id, (page) => ({
+    ...page,
+    items: page.items.filter((item) => item.id !== post.id),
+  }));
+
+  void queryClient.invalidateQueries({ queryKey: queryKeys.post(post.id) });
+}

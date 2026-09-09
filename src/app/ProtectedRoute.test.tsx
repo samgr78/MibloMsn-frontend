@@ -82,7 +82,7 @@ describe("Session expirée", () => {
   test("un 401 sur une route protégée déconnecte et ramène sur la connexion", async () => {
     writeSession(SESSION);
     server.use(
-      http.get("*/protege", () =>
+      http.get("*/protected", () =>
         HttpResponse.json({ error: "Token invalide" }, { status: 401 }),
       ),
     );
@@ -92,7 +92,7 @@ describe("Session expirée", () => {
 
     // Triggered through the real network layer, so the actual wiring is
     // what gets checked, not a stand-in.
-    await expect(fetchJson("/protege", { schema: z.unknown() })).rejects.toThrow();
+    await expect(fetchJson("/protected", { schema: z.unknown() })).rejects.toThrow();
 
     await waitFor(() => {
       expect(loginButton()).toBeInTheDocument();

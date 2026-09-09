@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { ApiError } from "../../../shared/api/ApiError";
 import { toScreenState } from "../../../shared/screen-state/screenState";
 import { ScreenStateView } from "../../../shared/screen-state/ScreenStateView";
@@ -6,7 +6,8 @@ import { EmptyState } from "../../../shared/ui/Feedback/EmptyState";
 import { Window } from "../../../shared/ui/Window/Window";
 import { CommentForm } from "../../comments/components/CommentForm";
 import { CommentList } from "../../comments/components/CommentList";
-import { LikeButton } from "../../likes/components/LikeButton";
+import { DeleteCommentButton } from "../../comments/components/DeleteCommentButton";
+import { PostActions } from "../components/PostActions";
 import { PostCard } from "../components/PostCard";
 import { usePost } from "../hooks/usePost";
 import styles from "./PostDetailPage.module.css";
@@ -24,6 +25,7 @@ function NotFound() {
 
 export function PostDetailPage() {
   const { postId } = useParams<{ postId: string }>();
+  const navigate = useNavigate();
   const post = usePost(postId ?? "");
   const state = toScreenState(post);
 
@@ -48,7 +50,13 @@ export function PostDetailPage() {
             <PostCard
               post={detail}
               variant="detail"
-              actions={<LikeButton post={detail} />}
+              actions={
+                <PostActions
+                  post={detail}
+                  // `replace`, so Back does not return to a dead URL.
+                  onDeleted={() => navigate("/feed", { replace: true })}
+                />
+              }
             />
 
             <Window
@@ -62,7 +70,12 @@ export function PostDetailPage() {
             >
               <div className={styles.commentsBlock}>
                 <CommentForm postId={detail.id} />
-                <CommentList comments={detail.comments} />
+                <CommentList
+                  comments={detail.comments}
+                  renderActions={(comment) => (
+                    <DeleteCommentButton postId={detail.id} comment={comment} />
+                  )}
+                />
               </div>
             </Window>
           </>

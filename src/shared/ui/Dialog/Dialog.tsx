@@ -8,6 +8,8 @@ type DialogProps = {
   title: string;
   icon?: string;
   confirmLabel?: string;
+  /** Confirm button label while the action is running. */
+  busyLabel?: string;
   cancelLabel?: string;
   confirmVariant?: ButtonVariant;
   busy?: boolean;
@@ -23,6 +25,7 @@ export function Dialog({
   title,
   icon = "❓",
   confirmLabel = "Confirmer",
+  busyLabel = "Patientez…",
   cancelLabel = "Annuler",
   confirmVariant = "danger",
   busy = false,
@@ -64,7 +67,7 @@ export function Dialog({
               {cancelLabel}
             </Button>
             <Button variant={confirmVariant} onClick={onConfirm} disabled={busy}>
-              {busy ? "Suppression…" : confirmLabel}
+              {busy ? busyLabel : confirmLabel}
             </Button>
           </>
         }
