@@ -8,32 +8,31 @@ import { useZodForm } from "../../../shared/forms/useZodForm";
 import { Button } from "../../../shared/ui/Button/Button";
 import { Field } from "../../../shared/ui/Field/Field";
 import { useToast } from "../../../shared/ui/Toast/useToast";
-import { RegisterSchema } from "../api/auth.schemas";
-import { useRegister } from "../hooks/useRegister";
+import { LoginSchema } from "../api/auth.schemas";
+import { useLogin } from "../hooks/useLogin";
 import styles from "./AuthLayout.module.css";
 
-// The backend does not say which field failed, so map the status to one.
 const ERROR_RULES: ReadonlyArray<FieldErrorRule> = [
-  { status: 409, field: "email", message: "Cet email est déjà utilisé" },
+  { status: 401, field: "password", message: "Email ou mot de passe incorrect" },
 ];
 
-export function RegisterForm() {
+export function LoginForm() {
   const { showToast } = useToast();
-  const registerMutation = useRegister();
+  const loginMutation = useLogin();
 
   const form = useZodForm({
-    schema: RegisterSchema,
-    initialValues: { email: "", username: "", password: "" },
-    // As for sign-in, `GuestRoute` redirects: one rule owns the destination.
-    onSubmit: (values) => registerMutation.mutateAsync(values).then(() => undefined),
+    schema: LoginSchema,
+    initialValues: { email: "", password: "" },
+    // No imperative navigation: once the session is set, `GuestRoute`
+    // moves the user on. One redirect, so no race.
+    onSubmit: (values) => loginMutation.mutateAsync(values).then(() => undefined),
     onError: (error) => {
       const fieldErrors = apiErrorToFieldErrors(error, ERROR_RULES);
 
-      // Anything that maps to no field still has to be shown.
       if (Object.keys(fieldErrors).length === 0) {
         showToast({
           variant: "error",
-          title: "Inscription impossible",
+          title: "Connexion impossible",
           message: toUserMessage(error),
         });
       }
@@ -58,24 +57,11 @@ export function RegisterForm() {
       />
 
       <Field
-        label="Nom d'utilisateur"
-        name="username"
-        required
-        autoComplete="username"
-        maxLength={30}
-        value={form.values.username}
-        error={form.errors["username"]}
-        disabled={form.isSubmitting}
-        onValueChange={(value) => form.setField("username", value)}
-      />
-
-      <Field
         label="Mot de passe"
         kind="password"
         name="password"
         required
-        autoComplete="new-password"
-        hint="8 caractères minimum"
+        autoComplete="current-password"
         value={form.values.password}
         error={form.errors["password"]}
         disabled={form.isSubmitting}
@@ -84,11 +70,11 @@ export function RegisterForm() {
 
       <div className={styles.actions}>
         <Button type="submit" variant="primary" fullWidth disabled={form.isSubmitting}>
-          {form.isSubmitting ? "Création du compte…" : "Créer mon compte"}
+          {form.isSubmitting ? "Connexion…" : "Se connecter"}
         </Button>
 
         <p className={styles.switchLine}>
-          Déjà un compte ? <Link to="/login">Se connecter</Link>
+          Pas encore de compte ? <Link to="/register">Créer un compte</Link>
         </p>
       </div>
     </form>
