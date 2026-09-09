@@ -5,6 +5,7 @@ import { LikeButton } from '../../features/likes/LikeButton.tsx'
 
 type PostCardProps = {
   post: Post
+  onLikeChange?: (isLiked: boolean) => void
 }
 
 function formatPostDate(createdAt: string): string {
@@ -14,7 +15,7 @@ function formatPostDate(createdAt: string): string {
   }).format(new Date(createdAt))
 }
 
-export function PostCard({ post }: PostCardProps): ReactElement {
+export function PostCard({ post, onLikeChange }: PostCardProps): ReactElement {
   const authorInitial = post.author.username.charAt(0).toUpperCase()
 
   return (
@@ -51,7 +52,7 @@ export function PostCard({ post }: PostCardProps): ReactElement {
       </div>
 
       <footer className="post-card-stats">
-        <LikeButton post={post} />
+        <LikeButton post={post} onLikeChange={onLikeChange} />
         <span>
           <strong>Comments:</strong> {post.commentCount}
         </span>

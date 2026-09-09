@@ -95,39 +95,61 @@
     box-shadow: 0 0 4px #66d87c;
 }
 
-.profile-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    padding: 1px;
-    border-bottom: 1px solid #9db5d8;
-    background-color: #9db5d8;
-}
-
-.profile-stats div {
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    gap: 3px;
-    padding: 12px 8px;
-    background: linear-gradient(180deg, #ffffff 0%, #e7f0fb 100%);
-}
-
-.profile-stats strong {
-    color: #214f89;
-    font-size: 18px;
-}
-
-.profile-stats span {
-    color: #506987;
-    font-size: var(--msn-font-size-xs);
-}
-
 .profile-forms {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 16px;
     padding: 20px;
+}
+
+.profile-posts-panel {
+    margin: 0 20px 20px;
+    overflow: hidden;
+    border: 1px solid #91a9d0;
+    border-radius: 4px;
+    background-color: #edf4fd;
+}
+
+.profile-posts-panel > header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 34px;
+    padding: 6px 10px;
+    color: #ffffff;
+    border-bottom: 1px solid #163c73;
+    background: linear-gradient(180deg, #6f9bd2 0%, #2f65a6 52%, #1d477e 100%);
+}
+
+.profile-posts-panel > header h2 {
+    font-size: var(--msn-font-size-lg);
+}
+
+.profile-posts-panel > header span {
+    display: grid;
+    min-width: 24px;
+    height: 20px;
+    padding-inline: 5px;
+    color: #173d75;
+    font-weight: var(--msn-font-bold);
+    place-items: center;
+    border: 1px solid #ffffff;
+    border-radius: 10px;
+    background-color: #edf4fd;
+}
+
+.profile-post-list {
+    display: grid;
+    gap: 14px;
+    padding: 14px;
+    list-style: none;
+}
+
+.profile-empty-posts {
+    padding: 20px;
+    color: #526b8b;
+    text-align: center;
+    background-color: #ffffff;
 }
 
 .profile-panel {
@@ -235,5 +257,13 @@
     .profile-forms {
         grid-template-columns: 1fr;
         padding: 12px;
+    }
+
+    .profile-posts-panel {
+        margin: 0 12px 12px;
+    }
+
+    .profile-post-list {
+        padding: 8px;
     }
 }

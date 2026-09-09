@@ -1,13 +1,15 @@
 import { z } from 'zod'
+import { PostSchema } from '../feed/post.schema.ts'
 
 export const ProfileSchema = z.object({
   id: z.string(),
   email: z.string().email(),
   username: z.string(),
   createdAt: z.string(),
-  postCount: z.number().int().nonnegative(),
-  commentCount: z.number().int().nonnegative(),
-  likeCount: z.number().int().nonnegative(),
+})
+
+export const ProfilePostsResponseSchema = z.object({
+  posts: z.array(PostSchema),
 })
 
 export const PasswordUpdateResponseSchema = z.object({
@@ -23,4 +25,3 @@ export const ProfileErrorSchema = z.object({
 
 export type Profile = z.infer<typeof ProfileSchema>
 export type ProfileField = z.infer<typeof ProfileErrorSchema>['field']
-

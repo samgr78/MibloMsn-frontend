@@ -4,9 +4,10 @@ import { getLikeErrorMessage, updatePostLike } from './likes.api.ts'
 
 type LikeButtonProps = {
   post: Post
+  onLikeChange?: (isLiked: boolean) => void
 }
 
-export function LikeButton({ post }: LikeButtonProps): ReactElement {
+export function LikeButton({ post, onLikeChange }: LikeButtonProps): ReactElement {
   const [isLiked, setIsLiked] = useState<boolean>(post.likedByMe)
   const [likeCount, setLikeCount] = useState<number>(post.likeCount)
   const [isPending, setIsPending] = useState<boolean>(false)
@@ -29,6 +30,7 @@ export function LikeButton({ post }: LikeButtonProps): ReactElement {
       const likeState = await updatePostLike(post.id, nextIsLiked)
       setIsLiked(likeState.likedByMe)
       setLikeCount(likeState.likeCount)
+      onLikeChange?.(likeState.likedByMe)
     } catch (error: unknown) {
       setIsLiked(isLiked)
       setLikeCount(likeCount)

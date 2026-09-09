@@ -3,10 +3,12 @@ import { api } from '../../api/axios.tsx'
 import {
   PasswordUpdateResponseSchema,
   ProfileErrorSchema,
+  ProfilePostsResponseSchema,
   ProfileSchema,
   type Profile,
   type ProfileField,
 } from './profile.schema.ts'
+import type { Post } from '../feed/post.schema.ts'
 
 export type ProfileApiError = {
   message: string
@@ -31,6 +33,29 @@ export async function fetchProfile(signal: AbortSignal): Promise<Profile> {
     throw new Error('The server returned an invalid profile.')
   }
   return result.data
+}
+
+async function fetchProfilePosts(
+  path: '/profile/posts' | '/profile/liked-posts',
+  signal: AbortSignal,
+): Promise<Post[]> {
+  const { data }: { data: unknown } = await api.get<unknown>(path, {
+    headers: getAuthorizationHeader(),
+    signal,
+  })
+  const result = ProfilePostsResponseSchema.safeParse(data)
+  if (!result.success) {
+    throw new Error('The server returned an invalid post list.')
+  }
+  return result.data.posts
+}
+
+export function fetchOwnPosts(signal: AbortSignal): Promise<Post[]> {
+  return fetchProfilePosts('/profile/posts', signal)
+}
+
+export function fetchLikedPosts(signal: AbortSignal): Promise<Post[]> {
+  return fetchProfilePosts('/profile/liked-posts', signal)
 }
 
 export async function saveProfile(
@@ -76,4 +101,3 @@ export function getProfileApiError(error: unknown): ProfileApiError {
   }
   return { message: 'An unexpected error occurred.' }
 }
-

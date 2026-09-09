@@ -7,7 +7,11 @@ import {
 } from 'react'
 import Form from '../../shared/components/Form.tsx'
 import Input from '../../shared/components/Input.tsx'
+import { PostCard } from '../../shared/components/PostCard.tsx'
+import type { Post } from '../feed/post.schema.ts'
 import {
+  fetchLikedPosts,
+  fetchOwnPosts,
   fetchProfile,
   getProfileApiError,
   savePassword,
@@ -34,6 +38,8 @@ const emptyPasswordForm: PasswordFormData = {
 
 function Profile(): ReactElement {
   const [profile, setProfile] = useState<ProfileData | null>(null)
+  const [ownPosts, setOwnPosts] = useState<Post[]>([])
+  const [likedPosts, setLikedPosts] = useState<Post[]>([])
   const [identityForm, setIdentityForm] =
     useState<IdentityFormData>(emptyIdentityForm)
   const [passwordForm, setPasswordForm] =
@@ -48,9 +54,15 @@ function Profile(): ReactElement {
 
   useEffect(() => {
     const controller = new AbortController()
-    void fetchProfile(controller.signal)
-      .then((loadedProfile) => {
+    void Promise.all([
+      fetchProfile(controller.signal),
+      fetchOwnPosts(controller.signal),
+      fetchLikedPosts(controller.signal),
+    ])
+      .then(([loadedProfile, loadedOwnPosts, loadedLikedPosts]) => {
         setProfile(loadedProfile)
+        setOwnPosts(loadedOwnPosts)
+        setLikedPosts(loadedLikedPosts)
         setIdentityForm({
           username: loadedProfile.username,
           email: loadedProfile.email,
@@ -155,12 +167,6 @@ function Profile(): ReactElement {
         </div>
       </section>
 
-      <section className="profile-stats" aria-label="Profile statistics">
-        <div><strong>{profile.postCount}</strong><span>Posts</span></div>
-        <div><strong>{profile.commentCount}</strong><span>Comments</span></div>
-        <div><strong>{profile.likeCount}</strong><span>Likes given</span></div>
-      </section>
-
       <div className="profile-forms">
         <Form className="profile-panel" onSubmit={submitIdentity} noValidate>
           <h2>Account information</h2>
@@ -227,9 +233,51 @@ function Profile(): ReactElement {
           </button>
         </Form>
       </div>
+
+      <section className="profile-posts-panel">
+        <header>
+          <h2>My posts</h2>
+          <span>{ownPosts.length}</span>
+        </header>
+        {ownPosts.length === 0 ? (
+          <p className="profile-empty-posts">You have not created a post yet.</p>
+        ) : (
+          <ul className="profile-post-list">
+            {ownPosts.map((post) => (
+              <li key={post.id}><PostCard post={post} /></li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <section className="profile-posts-panel">
+        <header>
+          <h2>Liked posts</h2>
+          <span>{likedPosts.length}</span>
+        </header>
+        {likedPosts.length === 0 ? (
+          <p className="profile-empty-posts">You have not liked a post yet.</p>
+        ) : (
+          <ul className="profile-post-list">
+            {likedPosts.map((post) => (
+              <li key={post.id}>
+                <PostCard
+                  post={post}
+                  onLikeChange={(isLiked) => {
+                    if (!isLiked) {
+                      setLikedPosts((posts) =>
+                        posts.filter((likedPost) => likedPost.id !== post.id),
+                      )
+                    }
+                  }}
+                />
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   )
 }
 
 export default Profile
-
