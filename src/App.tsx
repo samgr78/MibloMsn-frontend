@@ -20,6 +20,7 @@ function App(): ReactElement {
         <Route path="/feed" element={<PostFeed />} />
         <Route path="/posts/:postId" element={<PostDetail />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/:userId" element={<Profile />} />
       </Route>
     </Routes>
   )

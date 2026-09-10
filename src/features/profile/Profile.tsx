@@ -5,9 +5,11 @@ import {
   type FormEvent,
   type ReactElement,
 } from 'react'
+import { Link, useParams } from 'react-router-dom'
 import Form from '../../shared/components/Form.tsx'
 import Input from '../../shared/components/Input.tsx'
 import { PostCard } from '../../shared/components/PostCard.tsx'
+import { getCurrentUserId } from '../auth/session.ts'
 import { DeleteCommentButton } from '../comments/DeleteCommentButton.tsx'
 import type { Post } from '../feed/post.schema.ts'
 import {
@@ -15,67 +17,50 @@ import {
   fetchOwnComments,
   fetchOwnPosts,
   fetchProfile,
+  fetchPublicProfile,
+  fetchUserPosts,
   getProfileApiError,
   savePassword,
   saveProfile,
 } from './profile.api.ts'
-import type {
-  Profile as ProfileData,
-  ProfileComment,
-} from './profile.schema.ts'
+import type { Profile as ProfileData, ProfileComment } from './profile.schema.ts'
 import './Profile.css'
 
-type IdentityFormData = {
-  username: string
-  email: string
-}
-
-type PasswordFormData = {
-  currentPassword: string
-  newPassword: string
-}
-
 type PostSection = 'own' | 'liked' | 'comments'
-
-type ProfilePostListProps = {
+type LoadedProfile = {
+  profile: ProfileData
   posts: Post[]
-  emptyMessage: string
-  onUnlike?: (postId: string) => void
-  onDelete?: (postId: string) => void
+  likedPosts: Post[]
+  comments: ProfileComment[]
 }
-
-const emptyIdentityForm: IdentityFormData = { username: '', email: '' }
-const emptyPasswordForm: PasswordFormData = {
-  currentPassword: '',
-  newPassword: '',
-}
+type ProfileState =
+  | { status: 'loading' }
+  | { status: 'not-found' }
+  | { status: 'error'; message: string }
+  | ({ status: 'success' } & LoadedProfile)
 
 function ProfilePostList({
   posts,
   emptyMessage,
-  onUnlike,
+  canDelete,
   onDelete,
-}: ProfilePostListProps): ReactElement {
-  if (posts.length === 0) {
-    return <p className="profile-empty-posts">{emptyMessage}</p>
-  }
-
+  onUnlike,
+}: {
+  posts: Post[]
+  emptyMessage: string
+  canDelete: boolean
+  onDelete: (postId: string) => void
+  onUnlike?: (postId: string) => void
+}): ReactElement {
+  if (posts.length === 0) return <p className="profile-empty-posts">{emptyMessage}</p>
   return (
     <ul className="profile-post-list">
       {posts.map((post) => (
         <li key={post.id}>
           <PostCard
             post={post}
-            onLikeChange={
-              onUnlike
-                ? (isLiked) => {
-                    if (!isLiked) {
-                      onUnlike(post.id)
-                    }
-                  }
-                : undefined
-            }
-            onDelete={onDelete ? () => onDelete(post.id) : undefined}
+            onDelete={canDelete ? () => onDelete(post.id) : undefined}
+            onLikeChange={onUnlike ? (liked) => { if (!liked) onUnlike(post.id) } : undefined}
           />
         </li>
       ))}
@@ -83,133 +68,120 @@ function ProfilePostList({
   )
 }
 
-type ProfileCommentListProps = {
-  comments: ProfileComment[]
-  onDelete: (commentId: string) => void
-}
-
 function ProfileCommentList({
   comments,
   onDelete,
-}: ProfileCommentListProps): ReactElement {
+}: {
+  comments: ProfileComment[]
+  onDelete: (commentId: string) => void
+}): ReactElement {
   if (comments.length === 0) {
     return <p className="profile-empty-posts">You have not written a comment yet.</p>
   }
-
   return (
     <ul className="profile-comment-list">
       {comments.map((comment) => (
         <li key={comment.id}>
           <header>
             <strong>Comment on:</strong>
-            <span>{comment.post.content}</span>
+            <Link to={`/posts/${comment.post.id}`}>{comment.post.content}</Link>
             <time dateTime={comment.createdAt}>
-              {new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' }).format(
-                new Date(comment.createdAt),
-              )}
+              {new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium' }).format(new Date(comment.createdAt))}
             </time>
           </header>
           <p>{comment.content}</p>
-          <DeleteCommentButton
-            commentId={comment.id}
-            onDeleted={() => onDelete(comment.id)}
-          />
+          <DeleteCommentButton commentId={comment.id} onDeleted={() => onDelete(comment.id)} />
         </li>
       ))}
     </ul>
   )
 }
 
-function Profile(): ReactElement {
-  const [profile, setProfile] = useState<ProfileData | null>(null)
-  const [ownPosts, setOwnPosts] = useState<Post[]>([])
-  const [likedPosts, setLikedPosts] = useState<Post[]>([])
-  const [ownComments, setOwnComments] = useState<ProfileComment[]>([])
-  const [identityForm, setIdentityForm] =
-    useState<IdentityFormData>(emptyIdentityForm)
-  const [passwordForm, setPasswordForm] =
-    useState<PasswordFormData>(emptyPasswordForm)
-  const [pageError, setPageError] = useState<string>('')
-  const [identityMessage, setIdentityMessage] = useState<string>('')
-  const [identityError, setIdentityError] = useState<string>('')
-  const [passwordMessage, setPasswordMessage] = useState<string>('')
-  const [passwordError, setPasswordError] = useState<string>('')
-  const [isSavingIdentity, setIsSavingIdentity] = useState<boolean>(false)
-  const [isSavingPassword, setIsSavingPassword] = useState<boolean>(false)
-  const [activePostSection, setActivePostSection] =
-    useState<PostSection>('own')
+function ProfileContent({ userId }: { userId?: string }): ReactElement {
+  const isOwner = !userId || userId === getCurrentUserId()
+  const [state, setState] = useState<ProfileState>({ status: 'loading' })
+  const [activeSection, setActiveSection] = useState<PostSection>('own')
+  const [identityForm, setIdentityForm] = useState({ username: '', email: '' })
+  const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '' })
+  const [identityFeedback, setIdentityFeedback] = useState({ error: '', success: '' })
+  const [passwordFeedback, setPasswordFeedback] = useState({ error: '', success: '' })
+  const [isSavingIdentity, setIsSavingIdentity] = useState(false)
+  const [isSavingPassword, setIsSavingPassword] = useState(false)
 
   useEffect(() => {
     const controller = new AbortController()
-    void Promise.all([
-      fetchProfile(controller.signal),
-      fetchOwnPosts(controller.signal),
-      fetchLikedPosts(controller.signal),
-      fetchOwnComments(controller.signal),
-    ])
-      .then(([
-        loadedProfile,
-        loadedOwnPosts,
-        loadedLikedPosts,
-        loadedOwnComments,
-      ]) => {
-        setProfile(loadedProfile)
-        setOwnPosts(loadedOwnPosts)
-        setLikedPosts(loadedLikedPosts)
-        setOwnComments(loadedOwnComments)
-        setIdentityForm({
-          username: loadedProfile.username,
-          email: loadedProfile.email,
-        })
+
+    async function load(): Promise<LoadedProfile> {
+      if (isOwner) {
+        const [profile, posts, likedPosts, comments] = await Promise.all([
+          fetchProfile(controller.signal),
+          fetchOwnPosts(controller.signal),
+          fetchLikedPosts(controller.signal),
+          fetchOwnComments(controller.signal),
+        ])
+        return { profile, posts, likedPosts, comments }
+      }
+      const [profile, posts] = await Promise.all([
+        fetchPublicProfile(userId!, controller.signal),
+        fetchUserPosts(userId!, controller.signal),
+      ])
+      return { profile, posts, likedPosts: [], comments: [] }
+    }
+
+    void load()
+      .then((loaded) => {
+        localStorage.setItem(isOwner ? 'userId' : 'lastViewedUserId', loaded.profile.id)
+        if (isOwner) {
+          setIdentityForm({ username: loaded.profile.username, email: loaded.profile.email ?? '' })
+        }
+        setState({ status: 'success', ...loaded })
       })
       .catch((error: unknown) => {
-        if (!controller.signal.aborted) {
-          setPageError(getProfileApiError(error).message)
-        }
+        if (controller.signal.aborted) return
+        const apiError = getProfileApiError(error)
+        setState(apiError.status === 404
+          ? { status: 'not-found' }
+          : { status: 'error', message: apiError.message })
       })
     return () => controller.abort()
-  }, [])
+  }, [isOwner, userId])
 
   function updateIdentity(event: ChangeEvent<HTMLInputElement>): void {
     const { name, value } = event.currentTarget
-    if (name !== 'username' && name !== 'email') {
-      return
+    if (name === 'username' || name === 'email') {
+      setIdentityForm((form) => ({ ...form, [name]: value }))
+      setIdentityFeedback({ error: '', success: '' })
     }
-    setIdentityForm((currentForm) => ({ ...currentForm, [name]: value }))
-    setIdentityError('')
-    setIdentityMessage('')
   }
 
-  function updatePasswordField(event: ChangeEvent<HTMLInputElement>): void {
+  function updatePassword(event: ChangeEvent<HTMLInputElement>): void {
     const { name, value } = event.currentTarget
-    if (name !== 'currentPassword' && name !== 'newPassword') {
-      return
+    if (name === 'currentPassword' || name === 'newPassword') {
+      setPasswordForm((form) => ({ ...form, [name]: value }))
+      setPasswordFeedback({ error: '', success: '' })
     }
-    setPasswordForm((currentForm) => ({ ...currentForm, [name]: value }))
-    setPasswordError('')
-    setPasswordMessage('')
   }
 
   async function submitIdentity(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault()
+    if (identityForm.username.trim().length < 3 || identityForm.username.trim().length > 30) {
+      setIdentityFeedback({ error: 'Username must contain between 3 and 30 characters.', success: '' })
+      return
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identityForm.email.trim())) {
+      setIdentityFeedback({ error: 'Enter a valid email address.', success: '' })
+      return
+    }
     setIsSavingIdentity(true)
-    setIdentityError('')
-    setIdentityMessage('')
+    setIdentityFeedback({ error: '', success: '' })
     try {
-      const updatedProfile = await saveProfile(
-        identityForm.username,
-        identityForm.email,
-      )
-      setProfile(updatedProfile)
-      setIdentityForm({
-        username: updatedProfile.username,
-        email: updatedProfile.email,
-      })
-      localStorage.setItem('username', updatedProfile.username)
+      const profile = await saveProfile(identityForm.username, identityForm.email)
+      setState((current) => current.status === 'success' ? { ...current, profile } : current)
+      localStorage.setItem('username', profile.username)
       window.dispatchEvent(new Event('profile-updated'))
-      setIdentityMessage('Your profile has been updated.')
+      setIdentityFeedback({ error: '', success: 'Your profile has been updated.' })
     } catch (error: unknown) {
-      setIdentityError(getProfileApiError(error).message)
+      setIdentityFeedback({ error: getProfileApiError(error).message, success: '' })
     } finally {
       setIsSavingIdentity(false)
     }
@@ -217,215 +189,115 @@ function Profile(): ReactElement {
 
   async function submitPassword(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault()
+    if (passwordForm.newPassword.length < 8 || passwordForm.newPassword.length > 128) {
+      setPasswordFeedback({ error: 'The new password must contain between 8 and 128 characters.', success: '' })
+      return
+    }
     setIsSavingPassword(true)
-    setPasswordError('')
-    setPasswordMessage('')
+    setPasswordFeedback({ error: '', success: '' })
     try {
       await savePassword(passwordForm.currentPassword, passwordForm.newPassword)
-      setPasswordForm(emptyPasswordForm)
-      setPasswordMessage('Your password has been updated.')
+      setPasswordForm({ currentPassword: '', newPassword: '' })
+      setPasswordFeedback({ error: '', success: 'Your password has been updated.' })
     } catch (error: unknown) {
-      setPasswordError(getProfileApiError(error).message)
+      setPasswordFeedback({ error: getProfileApiError(error).message, success: '' })
     } finally {
       setIsSavingPassword(false)
     }
   }
 
-  if (pageError) {
-    return <p className="profile-page-error" role="alert">{pageError}</p>
+  function removePost(postId: string): void {
+    setState((current) => current.status === 'success'
+      ? {
+          ...current,
+          posts: current.posts.filter((post) => post.id !== postId),
+          likedPosts: current.likedPosts.filter((post) => post.id !== postId),
+        }
+      : current)
   }
 
-  if (!profile) {
-    return <p className="profile-page-loading">Loading profile...</p>
+  if (state.status === 'loading') return <p className="profile-page-loading">Loading profile...</p>
+  if (state.status === 'not-found') {
+    return <section className="profile-page-error" role="alert"><h1>User not found</h1><Link to="/feed">Return to feed</Link></section>
   }
+  if (state.status === 'error') return <p className="profile-page-error" role="alert">{state.message}</p>
 
-  const memberSince = new Intl.DateTimeFormat('en-GB', {
-    dateStyle: 'long',
-  }).format(new Date(profile.createdAt))
+  const memberSince = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long' })
+    .format(new Date(state.profile.createdAt))
+  const visiblePosts = activeSection === 'own' ? state.posts : state.likedPosts
 
   return (
     <div className="profile-page">
       <header className="profile-titlebar">
         <img src="/msn-boneco-vector-logo.png" alt="" />
-        <span>My MiBLo profile</span>
+        <span>{isOwner ? 'My MiBLo profile' : `${state.profile.username}'s profile`}</span>
       </header>
 
       <section className="profile-summary">
-        <div className="profile-avatar" aria-hidden="true">
-          {profile.username.charAt(0).toUpperCase()}
-        </div>
+        <div className="profile-avatar" aria-hidden="true">{state.profile.username.charAt(0).toUpperCase()}</div>
         <div>
-          <h1>{profile.username}</h1>
+          <h1>{state.profile.username}</h1>
           <p><span className="profile-online-dot" /> Online</p>
           <small>Member since {memberSince}</small>
         </div>
       </section>
 
-      <div className="profile-forms">
-        <Form className="profile-panel" onSubmit={submitIdentity} noValidate>
-          <h2>Account information</h2>
-          <Input
-            label="Username"
-            type="text"
-            name="username"
-            id="profile-username"
-            className="profile-input"
-            value={identityForm.username}
-            onChange={updateIdentity}
-            minLength={3}
-            maxLength={30}
-            autoComplete="username"
-            required
-          />
-          <Input
-            label="E-mail address"
-            type="email"
-            name="email"
-            id="profile-email"
-            className="profile-input"
-            value={identityForm.email}
-            onChange={updateIdentity}
-            autoComplete="email"
-            required
-          />
-          {identityError && <p className="profile-error" role="alert">{identityError}</p>}
-          {identityMessage && <p className="profile-success" role="status">{identityMessage}</p>}
-          <button type="submit" disabled={isSavingIdentity}>
-            {isSavingIdentity ? 'Saving...' : 'Save information'}
-          </button>
-        </Form>
-
-        <Form className="profile-panel" onSubmit={submitPassword} noValidate>
-          <h2>Change password</h2>
-          <Input
-            label="Current password"
-            type="password"
-            name="currentPassword"
-            id="current-password"
-            className="profile-input"
-            value={passwordForm.currentPassword}
-            onChange={updatePasswordField}
-            autoComplete="current-password"
-            required
-          />
-          <Input
-            label="New password"
-            type="password"
-            name="newPassword"
-            id="new-password"
-            className="profile-input"
-            value={passwordForm.newPassword}
-            onChange={updatePasswordField}
-            minLength={8}
-            autoComplete="new-password"
-            required
-          />
-          {passwordError && <p className="profile-error" role="alert">{passwordError}</p>}
-          {passwordMessage && <p className="profile-success" role="status">{passwordMessage}</p>}
-          <button type="submit" disabled={isSavingPassword}>
-            {isSavingPassword ? 'Saving...' : 'Change password'}
-          </button>
-        </Form>
-      </div>
+      {isOwner && (
+        <div className="profile-forms">
+          <Form className="profile-panel" onSubmit={submitIdentity} noValidate>
+            <h2>Account information</h2>
+            <Input label="Username" name="username" id="profile-username" className="profile-input" value={identityForm.username} onChange={updateIdentity} required />
+            <Input label="E-mail address" type="email" name="email" id="profile-email" className="profile-input" value={identityForm.email} onChange={updateIdentity} required />
+            {identityFeedback.error && <p className="profile-error" role="alert">{identityFeedback.error}</p>}
+            {identityFeedback.success && <p className="profile-success" role="status">{identityFeedback.success}</p>}
+            <button type="submit" disabled={isSavingIdentity}>{isSavingIdentity ? 'Saving...' : 'Save information'}</button>
+          </Form>
+          <Form className="profile-panel" onSubmit={submitPassword} noValidate>
+            <h2>Change password</h2>
+            <Input label="Current password" type="password" name="currentPassword" id="current-password" className="profile-input" value={passwordForm.currentPassword} onChange={updatePassword} required />
+            <Input label="New password" type="password" name="newPassword" id="new-password" className="profile-input" value={passwordForm.newPassword} onChange={updatePassword} required />
+            {passwordFeedback.error && <p className="profile-error" role="alert">{passwordFeedback.error}</p>}
+            {passwordFeedback.success && <p className="profile-success" role="status">{passwordFeedback.success}</p>}
+            <button type="submit" disabled={isSavingPassword}>{isSavingPassword ? 'Saving...' : 'Change password'}</button>
+          </Form>
+        </div>
+      )}
 
       <section className="profile-posts-area">
-        <div className="profile-post-tabs" role="tablist" aria-label="Profile posts">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activePostSection === 'own'}
-            onClick={() => setActivePostSection('own')}
-          >
-            <span aria-hidden="true">▤</span>
-            My posts
-            <strong>{ownPosts.length}</strong>
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activePostSection === 'comments'}
-            onClick={() => setActivePostSection('comments')}
-          >
-            <span aria-hidden="true">✉</span>
-            My comments
-            <strong>{ownComments.length}</strong>
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={activePostSection === 'liked'}
-            onClick={() => setActivePostSection('liked')}
-          >
-            <span aria-hidden="true">♥</span>
-            Liked posts
-            <strong>{likedPosts.length}</strong>
-          </button>
-        </div>
-
+        {isOwner && (
+          <div className="profile-post-tabs" role="tablist" aria-label="Profile activity">
+            {(['own', 'comments', 'liked'] as const).map((section) => (
+              <button key={section} type="button" role="tab" aria-selected={activeSection === section} onClick={() => setActiveSection(section)}>
+                {section === 'own' ? 'My posts' : section === 'comments' ? 'My comments' : 'Liked posts'}
+                <strong>{section === 'own' ? state.posts.length : section === 'comments' ? state.comments.length : state.likedPosts.length}</strong>
+              </button>
+            ))}
+          </div>
+        )}
         <div className="profile-posts-panel" role="tabpanel">
           <header>
-            <div>
-              <h2>
-                {activePostSection === 'own'
-                  ? 'My posts'
-                  : activePostSection === 'liked'
-                    ? 'Liked posts'
-                    : 'My comments'}
-              </h2>
-              <p>
-                {activePostSection === 'own'
-                  ? 'Posts you have shared on MiBLo.'
-                  : activePostSection === 'liked'
-                    ? 'Posts you saved with a like.'
-                    : 'Comments you have shared on MiBLo.'}
-              </p>
-            </div>
-            <span>
-              {activePostSection === 'own'
-                ? ownPosts.length
-                : activePostSection === 'liked'
-                  ? likedPosts.length
-                  : ownComments.length}
-            </span>
+            <div><h2>{isOwner ? (activeSection === 'comments' ? 'My comments' : activeSection === 'liked' ? 'Liked posts' : 'My posts') : `${state.profile.username}'s posts`}</h2></div>
           </header>
-
-          {activePostSection === 'own' ? (
-            <ProfilePostList
-              posts={ownPosts}
-              emptyMessage="You have not created a post yet."
-              onDelete={(postId) => {
-                setOwnPosts((posts) =>
-                  posts.filter((post) => post.id !== postId),
-                )
-                setLikedPosts((posts) =>
-                  posts.filter((post) => post.id !== postId),
-                )
-              }}
-            />
-          ) : activePostSection === 'liked' ? (
-            <ProfilePostList
-              posts={likedPosts}
-              emptyMessage="You have not liked a post yet."
-              onUnlike={(postId) =>
-                setLikedPosts((posts) =>
-                  posts.filter((post) => post.id !== postId),
-                )
-              }
-            />
+          {activeSection === 'comments' && isOwner ? (
+            <ProfileCommentList comments={state.comments} onDelete={(commentId) => setState((current) => current.status === 'success' ? { ...current, comments: current.comments.filter((comment) => comment.id !== commentId) } : current)} />
           ) : (
-            <ProfileCommentList
-              comments={ownComments}
-              onDelete={(commentId) =>
-                setOwnComments((comments) =>
-                  comments.filter((comment) => comment.id !== commentId),
-                )
-              }
+            <ProfilePostList
+              posts={visiblePosts}
+              emptyMessage={isOwner && activeSection === 'liked' ? 'You have not liked a post yet.' : isOwner ? 'You have not created a post yet.' : 'This user has not created a post yet.'}
+              canDelete={isOwner && activeSection === 'own'}
+              onDelete={removePost}
+              onUnlike={isOwner && activeSection === 'liked' ? removePost : undefined}
             />
           )}
         </div>
       </section>
     </div>
   )
+}
+
+function Profile(): ReactElement {
+  const { userId } = useParams<{ userId: string }>()
+  return <ProfileContent key={userId ?? 'my-profile'} userId={userId} />
 }
 
 export default Profile

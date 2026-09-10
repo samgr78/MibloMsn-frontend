@@ -27,10 +27,27 @@ export function PostCard({
 }: PostCardProps): ReactElement {
   const authorInitial = post.author.username.charAt(0).toUpperCase()
 
-  const postContent = (
-    <>
+  const postBody = (
+    <div className="post-card-body">
+      <p className="post-card-content">{post.content}</p>
+
+      {post.imageUrl && (
+        <div className="post-card-media">
+          <img
+            className="post-card-image"
+            src={resolveApiUrl(post.imageUrl)}
+            alt={`Publication de ${post.author.username}`}
+            loading="lazy"
+          />
+        </div>
+      )}
+    </div>
+  )
+
+  return (
+    <article className="post-card">
       <header className="post-card-header">
-        <div className="post-card-author">
+        <Link className="post-card-author" to={`/profile/${post.author.id}`}>
           <span className="post-card-avatar" aria-hidden="true">
             {authorInitial}
           </span>
@@ -38,37 +55,15 @@ export function PostCard({
             <strong>{post.author.username}</strong>
             <span className="post-card-status">Online</span>
           </div>
-        </div>
+        </Link>
 
         <time className="post-card-date" dateTime={post.createdAt}>
           {formatPostDate(post.createdAt)}
         </time>
       </header>
-
-      <div className="post-card-body">
-        <p className="post-card-content">{post.content}</p>
-
-        {post.imageUrl && (
-          <div className="post-card-media">
-            <img
-              className="post-card-image"
-              src={resolveApiUrl(post.imageUrl)}
-              alt={`Publication de ${post.author.username}`}
-              loading="lazy"
-            />
-          </div>
-        )}
-      </div>
-    </>
-  )
-
-  return (
-    <article className="post-card">
       {linkToDetail ? (
-        <Link className="post-card-detail-link" to={`/posts/${post.id}`}>
-          {postContent}
-        </Link>
-      ) : postContent}
+        <Link className="post-card-detail-link" to={`/posts/${post.id}`}>{postBody}</Link>
+      ) : postBody}
 
       <footer className="post-card-stats">
         <LikeButton post={post} onLikeChange={onLikeChange} />

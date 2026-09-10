@@ -15,6 +15,7 @@ import type { Post } from '../feed/post.schema.ts'
 export type ProfileApiError = {
   message: string
   field?: ProfileField
+  status?: number
 }
 
 function getAuthorizationHeader(): { Authorization: string } {
@@ -34,6 +35,19 @@ export async function fetchProfile(signal: AbortSignal): Promise<Profile> {
   if (!result.success) {
     throw new Error('The server returned an invalid profile.')
   }
+  return result.data
+}
+
+export async function fetchPublicProfile(
+  userId: string,
+  signal: AbortSignal,
+): Promise<Profile> {
+  const { data }: { data: unknown } = await api.get<unknown>(`/users/${userId}`, {
+    headers: getAuthorizationHeader(),
+    signal,
+  })
+  const result = ProfileSchema.safeParse(data)
+  if (!result.success) throw new Error('The server returned an invalid profile.')
   return result.data
 }
 
@@ -58,6 +72,19 @@ export function fetchOwnPosts(signal: AbortSignal): Promise<Post[]> {
 
 export function fetchLikedPosts(signal: AbortSignal): Promise<Post[]> {
   return fetchProfilePosts('/profile/liked-posts', signal)
+}
+
+export async function fetchUserPosts(
+  userId: string,
+  signal: AbortSignal,
+): Promise<Post[]> {
+  const { data }: { data: unknown } = await api.get<unknown>(`/users/${userId}/posts`, {
+    headers: getAuthorizationHeader(),
+    signal,
+  })
+  const result = ProfilePostsResponseSchema.safeParse(data)
+  if (!result.success) throw new Error('The server returned an invalid post list.')
+  return result.data.posts
 }
 
 export async function fetchOwnComments(
@@ -109,7 +136,11 @@ export function getProfileApiError(error: unknown): ProfileApiError {
   if (isAxiosError<unknown>(error)) {
     const result = ProfileErrorSchema.safeParse(error.response?.data)
     if (result.success) {
-      return { message: result.data.error, field: result.data.field }
+      return {
+        message: result.data.error,
+        field: result.data.field,
+        status: error.response?.status,
+      }
     }
   }
   if (error instanceof Error) {

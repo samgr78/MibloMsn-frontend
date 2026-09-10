@@ -11,6 +11,7 @@ import {
 import type { RegisterErrors, RegisterFormData } from './register.types.ts'
 import './auth.css'
 import { validateRegisterForm, hasRegisterErrors } from './register.validator.ts'
+import { saveSession } from './session.ts'
 
 const initialFormData: RegisterFormData = {
     email: '',
@@ -69,9 +70,11 @@ function Register(): ReactElement {
 
             const registerResponse = parseRegisterResponse(data, formData.username)
             if (registerResponse) {
-                localStorage.setItem('token', registerResponse.token)
-                localStorage.setItem('username', registerResponse.username)
-                navigate('/feed')
+                saveSession(registerResponse.token, {
+                    id: registerResponse.userId,
+                    username: registerResponse.username,
+                })
+                navigate('/feed', { replace: true })
                 return
             }
 

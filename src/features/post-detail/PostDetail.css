@@ -91,6 +91,21 @@
     white-space: pre-wrap;
 }
 
+.post-detail-comment-list .profile-comment-delete {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 7px;
+}
+
+.post-detail-comment-list .profile-comment-delete button {
+    padding: 3px 8px;
+    color: #8b1d28;
+    font: inherit;
+    cursor: pointer;
+    border: 1px solid #a7656d;
+    background: linear-gradient(180deg, #ffffff, #f1d3d7);
+}
+
 .post-detail-comment-avatar {
     display: grid;
     width: 24px;

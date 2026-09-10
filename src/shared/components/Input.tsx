@@ -3,6 +3,7 @@ import type {
   HTMLInputTypeAttribute,
   ReactElement,
 } from 'react'
+import { forwardRef } from 'react'
 
 type InputProps = ComponentPropsWithoutRef<'input'> & {
   type?: HTMLInputTypeAttribute
@@ -13,7 +14,7 @@ type InputProps = ComponentPropsWithoutRef<'input'> & {
   label: string
 }
 
-function Input({
+const Input = forwardRef<HTMLInputElement, InputProps>(function Input({
   type = 'text',
   label,
   placeholder,
@@ -21,12 +22,13 @@ function Input({
   id,
   className,
   ...props
-}: InputProps): ReactElement {
+}: InputProps, ref): ReactElement {
   return (
     <label>
       {label}
       <input
         {...props}
+        ref={ref}
         type={type}
         placeholder={placeholder}
         name={name}
@@ -35,7 +37,7 @@ function Input({
       />
     </label>
   )
-}
+})
 
 export default Input
 export type { InputProps }

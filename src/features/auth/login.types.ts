@@ -14,5 +14,6 @@ export type LoginErrors = {
 
 export type ParsedLoginResponse = {
   token: string
+  userId: string
   username: string
 }

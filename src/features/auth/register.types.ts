@@ -13,5 +13,6 @@ export type RegisterErrors = {
 
 export type ParsedRegisterResponse = {
     token: string
+    userId: string
     username: string
 }

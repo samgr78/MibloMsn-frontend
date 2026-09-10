@@ -11,6 +11,19 @@
     list-style: none;
 }
 
+.post-feed-refresh,
+.post-feed-page-error {
+    margin: 0 0 10px;
+    padding: 7px 10px;
+    border: 1px solid var(--msn-border);
+    background: #fff;
+}
+
+.post-feed-page-error {
+    color: #a31827;
+    border-color: #bf6872;
+}
+
 .post-card {
     overflow: hidden;
     color: #202020;
@@ -64,6 +77,12 @@
     align-items: center;
     gap: 9px;
     min-width: 0;
+    color: inherit;
+    text-decoration: none;
+}
+
+.post-card-author:hover strong {
+    text-decoration: underline;
 }
 
 .post-card-avatar {

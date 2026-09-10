@@ -16,6 +16,8 @@ import {
 } from './postDetail.api.ts'
 import '../feed/PostFeed.css'
 import './PostDetail.css'
+import { getCurrentUserId } from '../auth/session.ts'
+import { DeleteCommentButton } from '../comments/DeleteCommentButton.tsx'
 
 type DetailState =
   | { status: 'loading' }
@@ -161,6 +163,21 @@ function PostDetail(): ReactElement {
                       </time>
                     </header>
                     <p>{comment.content}</p>
+                    {comment.author.id === getCurrentUserId() && (
+                      <DeleteCommentButton
+                        commentId={comment.id}
+                        onDeleted={() => setState((current) => current.status === 'success'
+                          ? {
+                              status: 'success',
+                              post: {
+                                ...current.post,
+                                comments: current.post.comments.filter((item) => item.id !== comment.id),
+                                commentCount: Math.max(0, current.post.commentCount - 1),
+                              },
+                            }
+                          : current)}
+                      />
+                    )}
                   </li>
                 ))}
               </ul>

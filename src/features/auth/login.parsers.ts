@@ -45,11 +45,12 @@ export function parseLoginResponse(
   }
 
   const token = readString(value.token)
-  if (!token) {
+  const user = isUnknownRecord(value.user) ? value.user : undefined
+  const userId = user ? readString(user.id) : undefined
+  if (!token || !userId) {
     return undefined
   }
 
-  const user = isUnknownRecord(value.user) ? value.user : undefined
   const username =
     (user ? readString(user.username) : undefined) ??
     (user ? readString(user.name) : undefined) ??
@@ -57,7 +58,7 @@ export function parseLoginResponse(
     readString(value.name) ??
     fallbackEmail.split('@')[0]
 
-  return { token, username }
+  return { token, userId, username }
 }
 
 export function getLoginErrors(error: unknown): LoginErrors {
@@ -70,7 +71,7 @@ export function getLoginErrors(error: unknown): LoginErrors {
     return { general: 'Unable to log in.' }
   }
 
-  const responseMessage = readMessage(responseData.message)
+  const responseMessage = readMessage(responseData.message) ?? readMessage(responseData.error)
   const fieldErrors = readFieldErrors(responseData.errors)
   const field = responseData.field
 

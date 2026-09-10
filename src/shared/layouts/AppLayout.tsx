@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactElement } from 'react'
 import { Navigate, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import './AppLayout.css'
+import { clearSession } from '../../features/auth/session.ts'
 
 function AppLayout(): ReactElement {
   const navigate = useNavigate()
@@ -18,8 +19,7 @@ function AppLayout(): ReactElement {
   }, [])
 
   function logout(): void {
-    localStorage.removeItem('token')
-    localStorage.removeItem('username')
+    clearSession()
     navigate('/login', { replace: true })
   }
 

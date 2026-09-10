@@ -3,7 +3,7 @@ import { PostSchema } from '../feed/post.schema.ts'
 
 export const ProfileSchema = z.object({
   id: z.string(),
-  email: z.string().email(),
+  email: z.string().email().optional(),
   username: z.string(),
   createdAt: z.string(),
 })
