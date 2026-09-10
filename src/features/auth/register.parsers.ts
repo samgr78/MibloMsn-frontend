@@ -25,15 +25,16 @@ export function parseRegisterResponse(
         return undefined
     }
     const token = readString(value.token)
-    if (!token) {
+    const user = isUnknownRecord(value.user) ? value.user : undefined
+    const userId = user ? readString(user.id) : undefined
+    if (!token || !userId) {
         return undefined
     }
-    const user = isUnknownRecord(value.user) ? value.user : undefined
     const username =
         (user ? readString(user.username) : undefined) ??
         readString(value.username) ??
         fallbackUsername
-    return { token, username }
+    return { token, userId, username }
 }
 
 export function getRegisterErrorsFromData(value: unknown): RegisterErrors | undefined {
@@ -44,7 +45,11 @@ export function getRegisterErrorsFromData(value: unknown): RegisterErrors | unde
     if (!message) {
         return undefined
     }
-    return { [fieldFromMessage(message)]: message }
+    const field = readString(value.field)
+    const target = field === 'email' || field === 'username' || field === 'password'
+        ? field
+        : fieldFromMessage(message)
+    return { [target]: message }
 }
 
 export function getRegisterErrors(error: unknown): RegisterErrors {

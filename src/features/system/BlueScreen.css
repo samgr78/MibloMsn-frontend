@@ -1,0 +1,126 @@
+.blue-screen {
+    width: 100vw;
+    min-width: 320px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: hidden;
+    color: #ffffff;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-weight: 300;
+    background-color: #087dcc;
+}
+
+.blue-screen-content {
+    width: min(1080px, 74vw);
+    padding-top: clamp(70px, 16vh, 180px);
+    margin-left: clamp(34px, 13.5vw, 220px);
+}
+
+.blue-screen-sad-face {
+    margin-bottom: 28px;
+    font-size: clamp(92px, 10vw, 150px);
+    font-weight: 200;
+    line-height: 1;
+    letter-spacing: -10px;
+}
+
+.blue-screen h1 {
+    max-width: 1000px;
+    margin: 0;
+    font-size: clamp(28px, 3.05vw, 48px);
+    font-weight: 300;
+    line-height: 1.23;
+}
+
+.blue-screen-progress {
+    margin: 42px 0 44px;
+    font-size: clamp(26px, 2.45vw, 40px);
+    line-height: 1;
+}
+
+.blue-screen-details {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+}
+
+.blue-screen-qr {
+    position: relative;
+    flex: 0 0 116px;
+    width: 116px;
+    height: 116px;
+    border: 8px solid #ffffff;
+    background:
+        conic-gradient(
+            #087dcc 0 25%,
+            #ffffff 0 50%,
+            #087dcc 0 75%,
+            #ffffff 0
+        ) 0 0 / 12px 12px;
+}
+
+.blue-screen-qr-corner {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border: 6px solid #087dcc;
+    background-color: #ffffff;
+    box-shadow: inset 0 0 0 5px #087dcc;
+}
+
+.blue-screen-qr-corner--top-left {
+    top: 2px;
+    left: 2px;
+}
+
+.blue-screen-qr-corner--top-right {
+    top: 2px;
+    right: 2px;
+}
+
+.blue-screen-qr-corner--bottom-left {
+    bottom: 2px;
+    left: 2px;
+}
+
+.blue-screen-help {
+    max-width: 780px;
+    padding-top: 1px;
+    font-size: clamp(13px, 1.2vw, 18px);
+    line-height: 1.45;
+}
+
+.blue-screen-help p {
+    margin: 0 0 34px;
+}
+
+@media (max-width: 700px) {
+    .blue-screen {
+        overflow-y: auto;
+    }
+
+    .blue-screen-content {
+        width: auto;
+        padding: 48px 28px;
+        margin: 0;
+    }
+
+    .blue-screen-sad-face {
+        margin-bottom: 24px;
+    }
+
+    .blue-screen-progress {
+        margin-block: 32px;
+    }
+
+    .blue-screen-qr {
+        flex-basis: 92px;
+        width: 92px;
+        height: 92px;
+        background-size: 10px 10px;
+    }
+
+    .blue-screen-help p {
+        margin-bottom: 20px;
+    }
+}

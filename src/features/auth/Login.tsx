@@ -10,6 +10,7 @@ import type {
   PresenceStatus,
 } from './login.types.ts'
 import './auth.css'
+import { saveSession } from './session.ts'
 
 const initialFormData: LoginFormData = {
   email: '',
@@ -66,6 +67,17 @@ function Login(): ReactElement {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault()
+    const email = formData.email.trim()
+    const validationErrors: LoginErrors = {}
+    if (!email) validationErrors.email = 'Email is required.'
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      validationErrors.email = 'Invalid email format.'
+    }
+    if (!formData.password) validationErrors.password = 'Password is required.'
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors)
+      return
+    }
     setErrors({})
     setIsLoading(true)
 
@@ -81,9 +93,12 @@ function Login(): ReactElement {
         return
       }
 
-      localStorage.setItem('token', loginResponse.token)
-      localStorage.setItem('username', loginResponse.username)
-      navigate('/feed')
+      saveSession(loginResponse.token, {
+        id: loginResponse.userId,
+        username: loginResponse.username,
+      })
+
+      navigate('/feed', { replace: true })
     } catch (error: unknown) {
       setErrors(getLoginErrors(error))
     } finally {
@@ -165,10 +180,6 @@ function Login(): ReactElement {
             <div className="auth-option">
               <input type="checkbox" name="rememberMe" />
               <span>Remember me</span>
-            </div>
-            <div className="auth-option">
-              <input type="checkbox" name="rememberPassword" />
-              <span>Remember my password</span>
             </div>
             <div className="auth-option">
               <input type="checkbox" name="autoLogin" />

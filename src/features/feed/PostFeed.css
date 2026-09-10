@@ -11,6 +11,19 @@
     list-style: none;
 }
 
+.post-feed-refresh,
+.post-feed-page-error {
+    margin: 0 0 10px;
+    padding: 7px 10px;
+    border: 1px solid var(--msn-border);
+    background: #fff;
+}
+
+.post-feed-page-error {
+    color: #a31827;
+    border-color: #bf6872;
+}
+
 .post-card {
     overflow: hidden;
     color: #202020;
@@ -20,6 +33,21 @@
     box-shadow:
         1px 1px 0 white inset,
         2px 3px 8px rgb(36 81 138 / 18%);
+}
+
+.post-card-detail-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+}
+
+.post-card-detail-link:hover .post-card-body {
+    background: linear-gradient(180deg, #ffffff 0%, #e9f5ff 100%);
+}
+
+.post-card-detail-link:focus-visible {
+    outline: 2px solid #f2a900;
+    outline-offset: -3px;
 }
 
 .post-card-header,
@@ -49,6 +77,12 @@
     align-items: center;
     gap: 9px;
     min-width: 0;
+    color: inherit;
+    text-decoration: none;
+}
+
+.post-card-author:hover strong {
+    text-decoration: underline;
 }
 
 .post-card-avatar {
@@ -186,6 +220,55 @@
 }
 
 .post-like-error {
+    color: #a31827;
+    font-size: var(--msn-font-size-xs);
+}
+
+.post-delete {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.post-delete-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 26px;
+    padding: 3px 9px;
+    color: #8b1d28;
+    font: inherit;
+    cursor: pointer;
+    border: 1px solid #a7656d;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #ffffff 0%, #f1d3d7 100%);
+    box-shadow: inset 1px 1px 0 #ffffff;
+}
+
+.post-delete-button span {
+    color: #cf2f26;
+    font-size: 16px;
+    font-weight: var(--msn-font-bold);
+    line-height: 1;
+}
+
+.post-delete-button:hover:not(:disabled) {
+    border-color: #92343f;
+    background: linear-gradient(180deg, #ffffff 0%, #efbfc5 100%);
+}
+
+.post-delete-button:focus-visible {
+    outline: 2px solid var(--msn-border-active);
+    outline-offset: 2px;
+}
+
+.post-delete-button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.post-delete-error {
     color: #a31827;
     font-size: var(--msn-font-size-xs);
 }

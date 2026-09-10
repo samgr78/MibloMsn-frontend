@@ -1,10 +1,27 @@
-import type { ReactElement } from 'react'
-import { Navigate, NavLink, Outlet } from 'react-router-dom'
+import { useEffect, useState, type ReactElement } from 'react'
+import { Navigate, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import './AppLayout.css'
+import { clearSession } from '../../features/auth/session.ts'
 
 function AppLayout(): ReactElement {
+  const navigate = useNavigate()
   const token = localStorage.getItem('token')
-  const username = localStorage.getItem('username') ?? 'User'
+  const [username, setUsername] = useState<string>(
+    localStorage.getItem('username') ?? 'User',
+  )
+
+  useEffect(() => {
+    function refreshUsername(): void {
+      setUsername(localStorage.getItem('username') ?? 'User')
+    }
+    window.addEventListener('profile-updated', refreshUsername)
+    return () => window.removeEventListener('profile-updated', refreshUsername)
+  }, [])
+
+  function logout(): void {
+    clearSession()
+    navigate('/login', { replace: true })
+  }
 
   if (!token) {
     return <Navigate to="/login" replace />
@@ -20,9 +37,16 @@ function AppLayout(): ReactElement {
             alt=""
           />
           <span>MiBLo Messenger</span>
+          <span className="app-window-controls" aria-hidden="true">
+            <span>_</span><span>□</span><span>×</span>
+          </span>
         </header>
 
-        <section className="app-navigation-profile" aria-label="Connected user">
+        <NavLink
+          to="/profile"
+          className="app-navigation-profile"
+          aria-label="Open my profile"
+        >
           <div className="app-navigation-avatar" aria-hidden="true">
             {username.charAt(0).toUpperCase()}
           </div>
@@ -33,9 +57,11 @@ function AppLayout(): ReactElement {
               Online
             </span>
           </div>
-        </section>
+        </NavLink>
 
-        <p className="app-navigation-label">My activities</p>
+        <p className="app-navigation-label">
+          <span aria-hidden="true">⌃</span> Online (2)
+        </p>
 
         <div className="app-navigation-links">
           <NavLink to="/feed">
@@ -44,16 +70,39 @@ function AppLayout(): ReactElement {
             </span>
             <span className="app-navigation-link-text">Feed</span>
           </NavLink>
+          <NavLink to="/profile">
+            <span className="app-navigation-link-icon" aria-hidden="true">
+              P
+            </span>
+            <span className="app-navigation-link-text">Profile</span>
+          </NavLink>
         </div>
 
         <footer className="app-navigation-footer">
-          <span className="app-navigation-footer-dot" aria-hidden="true" />
-          <span>Connected</span>
+          <strong className="app-navigation-footer-title">I want to...</strong>
+          <button type="button" onClick={logout}>
+            <span className="app-navigation-signout-icon" aria-hidden="true">×</span>
+            <span className="app-navigation-link-text">Sign out</span>
+          </button>
+          <div className="app-navigation-ad" aria-hidden="true">
+            <img src="/msn-boneco-vector-logo.png" alt="" />
+            <span><strong>MiBLo</strong><small>Stay connected!</small></span>
+          </div>
         </footer>
       </nav>
 
-      <section className="app-content">
-        <Outlet />
+      <section className="app-workspace">
+        <header className="app-workspace-titlebar">
+          <img src="/msn-boneco-vector-logo.png" alt="" />
+          <span>MiBLo - Conversation</span>
+          <span className="app-window-controls" aria-hidden="true">
+            <span>_</span><span>□</span><span>×</span>
+          </span>
+        </header>
+
+        <section className="app-content">
+          <Outlet />
+        </section>
       </section>
     </main>
   )
