@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-test('connexion, publication et affichage immédiat dans le feed', async ({ page, request }) => {
+test('connexion, publication avec image et affichage immédiat dans le feed', async ({ page, request }) => {
   const content = `Publication Playwright ${Date.now()}`
   let createdPostId: string | undefined
 
@@ -13,10 +13,12 @@ test('connexion, publication et affichage immédiat dans le feed', async ({ page
 
     await page.getByRole('button', { name: 'Create a post' }).click()
     await page.getByLabel('Content').fill(content)
+    await page.getByLabel('Image (optional)').setInputFiles('public/msn-boneco-vector-logo.png')
     await page.getByRole('button', { name: 'Publish' }).click()
 
     const article = page.locator('article').filter({ hasText: content })
     await expect(article).toBeVisible()
+    await expect(article.locator('img.post-card-image')).toBeVisible()
     const detailPath = await article.locator('a.post-card-detail-link').getAttribute('href')
     createdPostId = detailPath?.split('/').at(-1)
     expect(createdPostId).toBeTruthy()
